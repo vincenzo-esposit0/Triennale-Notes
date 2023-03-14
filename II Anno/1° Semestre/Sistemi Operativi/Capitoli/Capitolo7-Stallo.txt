@@ -1,0 +1,146 @@
+CAPITOLO 7
+
+STALLO DEI PROCESSI
+In un ambiente multiprogrammazione più processi possono competere per ottenere un numero finito di risorse. Se le risorse richieste sono trattenute da altri processi a loro volta nello stato di attesa, il processo potrebbe non cambiare più il suo stato. Situazioni di questo tipo sono chiamate di stallo.
+MODELLO DEL SISTEMA
+Un sistema è composto da un numero finito di risorse da distribuire tra i vari processi in competizione. Le risorse sono suddivise in tipi differenti, ciascuno promanato da un certo numero di istanze identiche. Cicli di CPU, spazio di memoria, file e dispositivi sono tutti tipi di risorsa. Se un sistema ha due unita d’elaborazione, tale tipo di risorsa ha due istanze. Se un processo richiede un’istanza relativa a un tipo di risorsa, l’assegnazione di qualsiasi istanza di quel tipo può soddisfare la richiesta. Prima di adoperare una risorsa, un sistema deve richiederla e dopo averla usata deve rilasciarla. Un processo può richiedere tutte le risorse necessarie per eseguire il compito assegnatoli, anche se il numero delle risorse richieste non può superare il numero totale delle risorse presenti nel sistema. Nelle ordinarie condizioni di funzionamento un processo per servirsi di una risorsa deve:
+- Richiesta. Se la richiesta non si può soddisfare immediatamente, il processo deve attendere
+- Uso. Il processo può adoperare la risorsa
+- Rilascio. Una volta terminato l’uso della risorsa, deve rilasciarla
+La richiesta e il rilascio avvengono attraverso chiamate di sistema quali request e release. Una tabella del sistema memorizza tutti gli stati di ogni risorsa e se questa viene assegnata, indica il processo relativo. Un gruppo di processi entra in stallo quando tutti i processi del gruppo attendono un evento che può essere causato solo da un altro processo che si trova nello stesso stato di attesa.
+
+CARATTERIZZAZIONE DELLE SITUAZIONI DI STALLO
+In una situazione di stallo, i processi non terminano mai l’esecuzione e le risorse del sistema vengono bloccate impedendo l’esecuzione di altri processi.
+Condizioni necessarie
+So può avere una situazione di stallo solo se si verificano contemporaneamente queste 4 condizioni:
+- Mutua esclusione. Almeno una risorsa deve essere non condivisibile, vale a dire che è utilizzabile da un solo processo alla volta. Se un altro processo richiede tale risorsa si deve ritardare il processo finche la risorsa non diventi disponibile
+- Possesso e attesa. Un processo in possesso di almeno una risorsa attende di acquisire risorse gia in possesso di altri processi.
+- Impossibilita di prelazione. Non esiste un diritto di prelazione sulle risorse vale a dire che una risorsa può essere rilasciata volontariamente solo da processo che la sta utilizzando
+- Attesa circolare. Deve esistere un insieme di processi (P0,P1,…Pn-1) tale che P0 attende una risorsa da P1, P1 una di P2, …, Pn-1 una di P0.
+Grafo di assegnazione delle risorse
+Le situazioni di stallo si possono descrivere con maggior precisione avvalendosi di una rappresentazione detta grafo di assegnazione delle risorse.
+Si tratta di un insieme di vertici V e un insieme di archi E. un arco diretto dal processo Pi alla risorsa Rj significa che il processo ha richiesto la risorsa. Un argo dalla risorsa al processo significa che la risorsa è assegnata al processo. Un arco dal processo alla risorsa è detto arco di richiesta, un arco dalla risorsa al processo è detto arco di assegnazione. Quando un processo richiede l’uso di una risorsa, si inserisce l’arco dal processo alla risorsa e se viene assegnata subito, l’arco immediatamente diventa di assegnazione e al suo rilascio viene cancellato.
+Gli stati dei processi possono essere:
+il processo P1 possiede un’istanza del tipo di risorsa R2 e attende una di R1 e cosi via…
+Se ciascun tipo di risorsa ha esattamente un’istanza, allora l’esistenza di un ciclo implica la
+presenza di uno stallo; se il ciclo riguarda solo un insieme di risorse ciascuno dei quali ha solo
+un’istanza, allora si è verificato uno stallo.
+
+METODI PER LA GESTIONE DELLE SITUAZIONI DI STALLO
+La situazione di stallo si può affrontare in 3 modi:
+- Si può usare un protocollo per prevenire le situazioni di stallo
+- Si può permettere al SO di entrare in stallo individuarlo e ripristinarlo
+- Si può ignorare che il problema di stallo fingendo che non esistono.
+La 3 soluzione è quella adottata dalla maggior parte dei sistemi operativi.
+Per assicurare che non si verifichi mai uno stallo, il sistema può servirsi di metodi di prevenzione o
+di metodi per evitare. Prevenire le situazioni di stallo significa far uso di metodi atti ad assicurare
+che non si verifichi almeno una delle condizioni necessarie. Evitare le situazioni di stallo occorre
+che il sistema abbia in anticipo informazioni aggiuntive riguardante le risorse che un processo
+richiederà ed userà. Se un sistema non attui una prevenzione o un algoritmo per evitare le situazioni
+di stallo, allora esse possono verificarsi senza capire cosa sia successo.
+
+PREVENIRE LE SITUAZION DI STALLO
+Affiche si abbia uno stallo si devono verificare 4 condizioni necessarie; perciò prevenire il
+verificarsi di uno stallo assicurando che almeno una non si verifichi.
+
+Mutua esclusione
+Deve valere la condizione mutua esclusione solo per le risorse non condivisibili. Le risorse
+condivisibili non causano mai uno stallo quindi non bisogna mai attendere.
+
+Possesso e attesa
+Per assicurare che la condizione di possesso e attesa non si presenti mai nel sistema, occorre
+garantire che un processo che richiede una risorsa non ne possegga altre. Si può usare un protocollo
+che ponga la condizione che ogni processo prima di iniziare la propria esecuzione richieda tutte le
+risorse. Questo è uno spreco perché una risorsa può essere utilizzato quasi alla fine e quindi
+resterebbe per un lungo periodo inattiva. Un altro protocollo è quello che un processo per poter
+richiedere ed utilizzare una risorsa, deve rilasciare tutte quelle che ha.
+Un processo che richiede più risorse molto usate può trovarsi nella condizione di attenderne
+indefinitamente la disponibilità.
+
+Impossibilita di prelazione
+La terza condizione necessaria prevede che non sia possibile avere la prelazione su risorse gia
+assegnate. Si può impegnare un protocollo che se un processo richiede una risorsa e questa non è
+disponibile, allora egli le rilascia tutte per poi richiederle quando sono tutte disponibili. In
+alternativa quando un processo richiede alcune risorse, si verifica la disponibilità di queste ultime:
+se sono disponibili vengono assegnate, se non lo sono si verifica se sono assegnate a un processo
+che attende altre risorse. Se le risorse non sono disponibili ne assegnate ad altri il processo deve
+attender. Questo protocollo è adatto a risorse il cui stato si può salvare e recuperare facilmente in un
+secondo momento.
+
+Attesa circolare
+La quarta e ultima condizione necessaria per una situazione di stallo è l’attesa circolare. Un modo
+per assicurare che tale condizione d’attesa non si verifichi consiste nell’imporre un ordinamento
+totale all’insieme di tutti i tipi di risorse e un ordine crescente di numerazione per le risorse richieste
+da ciascun processo. Per prevenire si può usare un protocollo: ogni processo può richiedere risorse
+solo seguendo un ordine crescente di numerazione.
+
+EVITARE LE SITUAZIONI DI STALLO
+Gli algoritmi per prevenire le situazioni di stallo si trattano sul controllo della modalità della
+richiesta cosi da assicurare che non si possa verificare almeno una delle condizioni necessarie
+perché si abbia uno stallo. Un metodo alternativo per evitare le situazioni di stallo consiste nel
+richiedere ulteriori informazioni sulla modalità di richiesta, ossia l’ordine con cui utilizzerà le
+risorse. Una volta acquisita la sequenza completa delle richiese e dei rilasci di ogni processo, si può
+stabilire per ogni richiesta se il processo debba attenderne o meno per evitare una possibile
+situazione di stallo. Il modello più semplice e più utile richiede che ciascun processo dichiari il
+numero massimo delle risorse di ciascun tipo di cui necessita. Questo algoritmo definisce un
+metodo per evitare lo stallo ed esamina dinamicamente lo stato di assegnazione delle risorse per
+garantire che non posso esistere una condizione di attesa circolare.
+
+Stato sicuro
+Uno stato si dice sicuro se il sistema è in grado di assegnare risorse a ciascun processo in un certo
+ordine e impedire il verificarsi di uno stallo. Più formalmente un sistema si trova in uno stato sicuro
+solo se esiste una sequenza sicura. Uno stato sicuro non è di stallo. Viceversa uno stato di stallo no
+è sicuro ma non tutti gli stati non sicuri sono di stallo.
+Il sistema ha 12 unita a nastro. All’istante t0 il sistema si trova in uno stato sicuro (ha 3 unita
+libere). Se il processo P2 richiede 2 risorse il sistema entra in uno stato di stallo in quanto in questo
+modo nessuno riesce a portare a termine la propria esecuzione. L’idea è semplice: assicurare che il
+sistema rimanga sempre in uno stato sicuro. Ogni volta che un processo richiede una risorsa il
+sistema stabilisce se si verifica uno stallo o meno e si soddisfa la richiesta solo se non si verifichi lo
+stallo.
+
+Algoritmo con grafo di assegnazione
+Per evitare le situazioni di stallo si può far uso di una variante del grafo di assegnazione delle
+risorse. Oltre agli archi di richiesta e di assegnazione si introduce un nuovo arco, l’arco di reclamo
+disegnato con una linea tratteggiata. Questo arco ha la stessa direzione dell’arco di richiesta e nel
+momento che il processo richiede la risorsa essa diventa un arco di richiesta. Ciò significa che gli
+archi di reclamo devono essere gia inseriti prima che il processo Pi inizi. Quando un processo
+rilascia una risorsa, l’arco di rilascio diventa arco di reclamo.
+ 
+RILEVAMENTO DELLE SITUAZIONI DI STALLO
+Se un sistema non si avvale di un algoritmo per prevenire o evitare situazioni di stallo, è possibile
+che si verifichi effettivamente- in tal caso il sistema deve fornire i seguenti algoritmi:
+- Un algoritmo che esamini lo stato del sistema per verificare che si sia verificato
+- Un algoritmo che ripristini il sistema dalla condizione di stallo
+Istanza singola di ciascun tipo di risorsa
+Se tutte le risorse hanno una sola istanza si può definire un algoritmo di rilevamento di situazione di
+stallo che fa uso di una variante del grafo di assegnazione delle risorse, detta grafo d’attesa, ottenuta
+dal grafo di assegnazione togliendo i nodi dei tipi di risorse e componendo gli archi tra i processi.
+Come in precedenza, nel sistema esiste uno stallo se e solo se il grafo d’attesa contiene un ciglio.
+Per evitare le situazioni di stallo, il sistema deve conservare in grafo d’attesa e invocare
+periodicamente algoritmo che cerchi un ciclo all’interno del grafo.
+Ora il sistema è in stallo. Anche se si possono reclamare le risorse possedute dal processo P0, il
+numero delle risorse disponibili non è sufficiente per soddisfare le richiesta degli atri processi.
+
+RIPRISTINO DA SITUAZIONI DI STALLO
+Una situazione di stallo si può affrontare in diversi modi. Una soluzione consiste nell’informare
+l’operatore della presenza dello stallo, in modo che possa gestirlo manualmente. L’altra soluzione
+lascia al sistema il ripristino in modo che interrompa o tutti i processi in stallo oppure interrompe
+man mano un processo finche non si risolva tale situazione.
+Terminazione dei processi
+Per eliminare le situazioni di stallo attraverso la terminazione dei processi si possono adoperare 2
+metodi:
+- Terminazione di tutti i processi in stallo. Chiaramente questo metodo interrompe lo stallo
+ma l’operazione è molto onerosa. Si pensi al caso in cui alcuni processi manca poco alla fine
+e venga terminato, tutto il lavora fatto andrebbe perso.
+- Terminazione di un processo alla volta fino all’eliminazione del ciclo di stallo. Questo
+metodo causa un notevole carico poiché dopo aver terminato ogni processo, si devi
+impiegare un algoritmo di rilevamento per stabilire se lo stallo è ancora presente o meno.
+Terminare un processo è un’operazione delicata, si pensi ad un processo che sta cambiando un file
+in scrittura, la sua terminazione resterebbe il file in uno stato scorretto. Per la terminazione parziale
+bisogna scegliere il processo da terminare. Le considerazioni sono soltanto economiche. La scelta
+dei processi è influenzata :
+- la priorità dei processi
+- il tempo trascorso dalla computazione il tempo necessario per completare
+- la quantità e il tipo di risorsa impiegata
+- il numero di processi che si devono terminare
+- il tipo di processo; interattivi o a lotti.

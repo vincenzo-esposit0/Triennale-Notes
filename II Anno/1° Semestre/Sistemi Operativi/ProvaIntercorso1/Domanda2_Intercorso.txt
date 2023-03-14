@@ -1,0 +1,74 @@
+MONITOR
+
+Un monitor è un tipo di dato astratti (ADT) che comprende un insieme di operazioni definte dal programmatore che all'interno del monitor, sono contraddistinte dalla mutua escusione.
+Il tipo monitor contiene anche la dichiarazione delle variabili i cui valori definiscono lo stato di un'istanza del tipo, oltre al corpo delle procedure o funzioni che operano su tali variabili.
+Una funzione definita all'interno di un monitor ha accesso unicamente alle variabili dichiarate localmente, situate nel monitor, e ai relativi parametri formali.
+Il costrutto monitor assicura che all'interno di un monitor possa essere attivo un solo processo alla volta.
+Un programmatore che necessita di implementare un particolare schema di sincronizzazione può definire una o più variabili di tipo condition: condition x, y;
+Le operazioni eseguibili sono: 
+1. x.wait(), la quale implica il processo che la invoca rimanga sospeso finchè un altro processo non invochi l'operaione di signal().
+2. x.signal(), la quale risveglia un processo in sospeso.
+
+
+
+Sintassi di un monitor 
+monitor nome_monitor
+{
+	dichiarazioni di variabili condivise
+
+	procedure body P1 (...) {
+	...
+	}
+	procedure body P2 (...) {
+	...
+	}
+	...
+	procedure body Pn (...) {
+	...
+	}
+	{
+	codice d'inizializzazione
+	}
+}	
+
+Soluzione al problema dei 5 filosofi per mezzo del monitor
+I concetti relativi al costrutto monitor presentando una soluzione esente da stallo del problema dei 5
+filosofi. Esistono vincoli nel quale un filosofo può prendere la forchetta solo nel caso in cui abbia
+entrambe le forchette disponibili.
+La distribuzione delle bacchette è controllata dal monitor. Ciascun filosofo prima di cominciare a
+mangiare deve invocare la funzione prende; ciò può determinare la sospensione del filosofo.
+Completata con successione l’operazione, il filosofo può mangiare. Infine posa le bacchette e si
+mette a pensare.
+
+monitor fc
+{
+	enum{pensa, affamato, mangia} stato[5];
+	condition auto[5];
+	
+	void prende(int i) {
+	stato[i] = affamato;
+	verifica[i];
+	if (stato[i] != mangia]
+	auto[i].wait();
+}
+
+	void posa(int i) {
+	stato[i] = pensa;
+	verifica ((i+4)%5);
+	verifica ((i+1)%5);
+	}
+
+	void verifica(int i) {
+	if((stato[(i+4)%5] =! mangia) &&
+	(stato [i] == affamato) && 
+	(stato[(i+1) %5] != mangia)) {
+		stato[i] = mangia;
+		auto[i].signal();
+		}
+	}
+	
+	void inizializzazione() {
+		for  (int i=0; i<5;i++)
+	stato[i] = pensa;
+		}
+	}

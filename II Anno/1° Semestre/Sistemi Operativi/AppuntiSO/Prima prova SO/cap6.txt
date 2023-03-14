@@ -1,0 +1,457 @@
+1. INTRODUZIONE
+Un processo cooperante è un processo che può influenzarne un altro in esecuzione nel sistema o
+anche subirne l’influenza. I processi cooperanti possono condividere direttamente uno spazio logico
+di indirizzi.
+Parlando del problema del produttore/consumatore e rifacendoci al concetto di buffer. Come
+sappiamo la nostra memoria può condividere massimo DIM_BUFFER -1 elementi. Quindi per
+tenere traccia del numero di elementi si aggiunge una variabile, contatore, inizializzata a 0 che
+incrementa ad ogni produzione e decrementa ad ogni consumo.
+
+while(1)	{	
+	/* produce un elemento in appena_prodotto */
+	while (contatore == DIM_VETTORE)
+	; /* non fa niente */
+	vettore[inserisci] = appena_prodotto;
+	inserisci = (inserisci+1) % DIM_VETTORE;	
+	contatore++;
+	}
+
+Il codice per il processo consumatore si può modificare come segue:
+while(1) {
+	while(contatore==0)
+	; /* non fa niente */ 
+	da_consumare = vettore[preleva];
+	preleva = (preleva+1) % DIM_VETTORE;
+	contatore--;
+	/* consuma un elemento in da_consumare*/
+
+Le procedure del produttore e del consumatore possono non funzionare altrettanto correttamente se
+si eseguono in modo concorrente. Si supponga per esempio che il valore della variabile contatore
+sia attualmente 5, e che i processi produttore e consumatore eseguano le istruzioni contatore++ e
+contatore- - in modo concorrente. Si può avere attraverso le istruzioni del calcolatore un risultato
+diverso da quello che dovrebbe essere. Per evitare situazioni di questo tipo, il cui più processi
+accedono e modificano gli stessi dati in modo concorrente e i risultati dipendono dall’ordine degli
+accessi occorre assicurare che un solo processo alla volta possa modificare la variabile contatore.
+Questa condizione richiede una forma di sincronizzazione dei processi.
+
+2. PROBLEMA DELLA SEZIONE CRITICA
+Si consideri un sistema composta di n processi (P0, P1, …,PN-1), ciascuno avente un segmento di
+codice chiamata sezione critica in cui il processo può modificare variabili comuni, aggiornare una
+tabella, scrivere in un file. Quando un processo è in esecuzione nella propria sezione critica, non si
+deve consentire a nessun altro processo di essere in esecuzione nella propria sezione critica. Quindi,
+l’esecuzione delle sezioni critiche da parte dei processi è mutuamente esclusiva nel tempo. Il
+problema della sezione critica si affronta progettando un protocollo che i processi possono utilizzare
+per comprare. Ogni processo deve chiedere il permesso per entrare nella propria sezione critica. La
+sezione di codice che realizza questa richiesta è la sezione d’ingresso. La sezione critica può essere
+seguita da una sezione d’uscita e la restante parte del codice è detta sezione non critica. Una
+soluzione del problema della sezione critica deve soddisfare i tre requisiti:
+- Mutua esclusione. Se il processo Pi è in esecuzione nella sua sezione critica, nessun altro
+processo può essere in esecuzione nella propria sezione critica.
+- Progresso. Se nessun processo è in esecuzione nella sua sezione critica e qualche processo
+desidera entrare nella propria sezione critica, solo i processi che si trovano fuori delle
+rispettive sezioni non critiche possono partecipare alla decisione riguardante la scelta del
+processo che può entrare per primo nella propria sezione critica.
+- Attesa limitata. Se un processo ha gia richiesto l’ingresso nella sua sezione critica, esiste un
+limite al numero di volte che si consente ad altri processi di entrare nelle rispettive sezioni
+critiche prima che si accordi la richiesta del primo processo.
+
+Soluzione per 2 processi
+I processi sono indicati con P0 e P1. una volta introdotto un processo Pi l’altro è Pj dove j=1-i.
+               	do {
+	-sezione d'ingresso-
+	sezione critica
+	-sezione d'uscita-
+	sezione non critica
+	} while (1);
+Struttura generale di un tipico processo Pi.
+
+Algoritmo 1
+                	do {
+	while (turno!=i);
+	sezione critica
+	turno = j;
+	sezione non critica
+	} while(1);
+Il primo tentativo di soluzione consiste nel far condividere ai processi una variabile intera, turno,
+inizializzata a 0. se turno==i si permette al processo Pi di entrare nella propria sezione critica.
+Questa soluzione assicura che in un dato momento un solo processo può trovarsi nella propria
+sezione critica. Tuttavia la soluzione non soddisfa il requisito di progresso poiché richiede una
+stretta alternanza dei processi nell’esecuzione della sezione critica. Se ad esempio turno==0, P1 non
+può entrare nella propria sezione critica, anche se P0 si trova nella propria sezione non critica.
+
+Algoritmo 2
+	do{
+	pronto[i]= true;
+	while (pronto[j]);	
+	sezione critica
+	pronto[i] = false;
+	sezione non critica
+	} while (1);
+L’algoritmo 1 non possiede informazioni sufficienti sullo stato di ogni processo; ricorda solo il processo cui si permette l’ingresso nella propria sezione critica. Per questo motivo si sostituisce la variabile turno con un vettore boolean pronto [2] che viene inizializzato a false. Se pronto[i] è true significa che Pi può entrare nella sezione critica, altrimenti entra Pj. Inizialmente viene posto pronto[i]=true permettendo al processo Pi di entrare nella sezione critica verificando che Pj non sia pronto per entrare nella propria sezione critica. Questa soluzione soddisfa il requisito di mutua esclusione ma no quello di progresso. Nel momento in cui sia pronto[i] che pronto[j] diventano true, Pi e Pj entrano nel ciclo infinito. Questo accade quando nello stesso momento vengono poste sia pronto[i] che pronto[j] a true.
+
+Algoritmo 3 o soluzione di PETERSON
+La soluzione di Peterson si applica a 2 processi, ognuno dei quali esegue alternativamente la propria sezione critica e la sezione rimanente. Vengono introdotte la variabile:
+int turno (segnala di chi è il turno)
+boolean pronto[2] (indica se un processo sia pronto ad entrare nella propria sezione critica)
+
+	do{
+	pronto[i] = true;
+	turno = j;
+	while (pronto[j] && turno ==j);
+	sezione critica
+	pronto[i] = false;
+	sezione non critica
+	} while (1);
+
+Per dimostrare che la mutua esclusione è preservata si osserva che Pi acceda alla propria sezione critica solo se pronto [j]=false oppure turno=i.
+Poiché tuttavia Pi non modifica il valore della variabile turno durante l’esecuzione dell’istruzione while, Pi entrerà nella sezione critica (pregresso) dopo che Pj abbia effettuato non più di un ingresso (attesa limitata).
+
+Soluzione per più processi: algoritmo del fornaio
+	do{
+	scelta[i] = true;
+	numero[i] = max(numero[0], numero[1], ..., numero [n-1]) +1;
+	scelta[i]=false;	
+	for(j=0; j<n;j++){
+	while(scelta[j]);	
+	while((numero[j] != 0)&&(numero [j,j] < numero [i,i]));
+	}
+	sezione critica
+	numero[i] = 0;
+	sezione non critica
+	} while(1);
+L’algoritmo 3 risolve il problema della sezione critica per due processi, mentre l’algoritmo del
+fornaio lo risolve per n processi. È basato su uno schema di servizio usato nella panetteria dove si
+deve evitare la confusione dei turni. Al suo ingresso nel negozio ogni cliente riceve un numero. Si
+serve progressivamente il cliente con il più basso. A parità di numero si serve il cliente con il nome
+minore.
+Boolean scelta [n]
+Int numero
+(a,b)<(c,d) se a<c oppure se a=c e b<d
+
+3. HARDWARE PER LA SINCRONIZZAZIONE
+In generale si può affermare che qualunque soluzione al problema richiede l’uso di un semplice
+strumento detto lock. Il corretto ordine degli accessi alle strutture dati del kernel è garantito dal fatto
+che lezioni critiche sono protette da lock. In altri termini un processo per accedere alla propria
+sezione critica deve ottenere il permesso di un lock.
+In un sistema dotato di una singola CPU tale problema si potrebbe risolvere semplicemente se si
+potessero interidre le interruzioni. Non si potrebbe eseguire nessunaltra istruzione quindi non si
+potrebbe apportare alcuna modifica inaspettata alle variabili condivise. È questo l’approccio seguito
+dal kernel senza diritto di prelazione.
+Le interruzioni portano uno spreco del tempo e per questo motivo molte architetture offrono
+particolari istruzioni che permettono di controllare e modificare il contenuto di una parola di
+memoria oppure di scambiare il contenuto di due parole di memoria.
+
+boolean TestAndSet(boolean &obiettivo) {
+	boolean valore = obiettivo;
+	obiettivo = true;
+	return valore;
+	}
+
+Lìistruzione TestAndSet è eseguita atomicamente, cioè come un'unità non soggetta ad interruzioni.
+	do {
+	while (TestAndSet(blocco));
+	sezione critica
+	blocco = false;
+	sezione non critica
+	} while(1);
+L’istruzione Swap agisce sul contenuto di 2 parole di memoria, anche’essa eseguita atomicamente.
+La mutua esclusione si garantisce dichiarando e inizializzando a false una variabile globale lock.
+	void Swap(boolean &a, boolean &b) {
+	     boolean temp=a;
+	     a=b;
+	     b=temp;
+	}
+
+	do{
+	chiave=true;
+	while(chiave==true)
+	  Swap(blocco,chiave);
+	sezione critica
+	blocco=false;
+	sezione non critica
+	} while(1);
+
+Il seguente algoritmo sfrutta l’istruzione TestAndSet per soddisfare tutti e tre i requisiti desiderati.
+	do{
+	attesa[i] = true;
+	chiave = true;
+	while(attesa[i] && chiave)
+	chiave = TestAndSet(blocco);	
+	attesa[i] = false;
+	sezione critica
+	j = (i+1) % n;
+	while((j != i) && !attesa[i])
+		j=(j+1) %n;
+	if(j==i)
+		blocco=false;
+	else
+		attesa[j]=false;
+	sezione non critica
+	} while(1);
+
+Le strutture dati sono:
+boolean attesa [n]=false
+boolean lock=false.
+Per soddisfare il requisito di mutua esclusione Pi entra nella propria sezione critica solo se
+attesa[i]=false oppure chiave=false.éer dimostrare che soddisfi il requisito del pregresso basta
+notare che un processo che esce dalla sezione critica imposta lock al valore false oppure attesa [j] a
+false entrambe consentono a un processo in attesa l’ingresso nella propria sezione critica.
+
+4. SEMAFORI
+Le varie soluzioni hardware al problema della sezione critica basate su istruzioni quali TestAndSet
+e Swap complicano l’attività del programmatore. Per ovviare questo problema si fa uso dei
+semafori.
+Un semaforo S è una variabile intera che si può accedere, escludendo l’inizializzazione, solo tramite
+due operazioni atomiche: wait e signal.
+
+wait(S){
+	while(S <= 0)
+	; // non-op;
+	S--;
+	}
+	signal(S) {
+	S++;
+	}
+
+Tutte le modifiche del semaforo sono contenute nelle operazioni wait e signal.
+
+Uso dei semafori
+Si usa distinguere tra semafori contatore il cui valore è illimitato e semafori binari il cui valore è 0 o
+1. I semafori sono utilizzati per risolvere il problema della sezione critica con n processi che
+condividono un semaforo chiamato mutex inizializzato a 1.
+
+do {
+	wait(mutex);
+	sezione critica
+	signal(mutex);
+	sezione non critica
+	} while(1);
+
+I semafori contatore vengono utilizzati nel controllo dell’accesso a una data risorsa. I processi che
+vogliono utilizzare il semaforo usano wait decrementando il valore. Quando restituiscono la risorsa
+effettuano la signal incrementando il valore.
+
+Realizzazione
+Il principale svantaggio dell’uso dei semafori è che richiede una condizione di attesa attiva. Mentre
+un processo si trova nella propria sezione critica, qualsiasi altro processo che tendi di entrarvi si
+trova sempre nel ciclo del codice della sezione di ingresso. Questo costituisce per un sistema a
+multiprogrammazione poiché l’attesa attiva spreca cicli alla CPU. Per superare l’attesa attiva si
+possono modificare signal e wait . quando un processo deve attendere anziché entrare nella attesa
+attiva si blocca se stesso e quindi la CPU sceglie un altro processo. Un processo bloccato che
+attende a un semaforo si riavvia attraverso l’operazione wakeup.
+La lista rappresenta i processi in attesa a un semaforo. L’operazione signal preleva un processo da
+tale lista e lo attiva. L’operazione block sospende il processo e l’operazione wakeup pone in stato di
+pronto per l’esecuzione il processo bloccato. Se il valore del semaforo è negativo, la sua dimensione
+è data dal numero dei processi che attendono a quel semaforo. I semafori devono essere eseguiti in
+modo atomico. Nei sistemi multiprocessore è necessario disabilitare le interruzioni di tutti i
+processori perché altrimenti le istruzioni dei diversi processi in esecuzione su processori distinti potrebbero interferire fra loro. Le operazioni wait e signal non eliminano completamente l’attesa attiva ma si limitano a rimuoverla dalla sezione di ingresso.
+
+typedef struct {
+	int valore;
+	struct processo *L;
+	} semaforo;
+
+void wait (semaforo S) {
+	S.valore--;
+	if(S.valore <0) {
+	aggiungi questo processo a S.L;
+	block();
+	}
+}
+
+void signal(semaforo S) {
+	S.valore++;
+	if (S.valore <= 0) {
+	togli un processo P da S.L;	
+	wakeup(P);
+	}
+}
+
+Stallo e attesa indefinita
+La realizzazione di un semaforo con coda d’attesa può condurre a situazioni in cui ciascun processo di un insieme di processi attende indefinitamente un evento che può essere causato solo da uno dei processo dello stesso insieme. Quando si verifica una situazione di questo tipo ci troviamo in una situazione di stallo. Un insieme di processi è in stallo se ciascun processo dell’insieme attende un evento che può essere causato solida un altro processo dell’insieme. Un’altra questione connessa alle situazioni d istallo è quella dell’attesa indefinita.
+
+5. PROBLEMI TIPICI DI SINCRONIZZAZIONE
+Produttori consumatori con memoria limitata
+Il problema dei produttori/consumatori con memoria limitata si usa generalmente per illustrare la potenza delle primitive di sincronizzazione. Si supponga di disporre di una certa quantità di memoria rappresentata da un buffer con n posizioni, ciascuna capace di contenere un elemento. Il semaforo mutex garantisce la mutua esclusione degli accessi al buffer ed è inizializzato al valore 1. i semafori vuole e piene conteggiano rispettivamente il numero delle posizioni vuote e il semaforo piene si inizializza a 0.
+
+Struttura generale processo produttore
+do {
+	produce un elemento in appena_prodotto
+	...
+	wait(vuote);
+	wait(mutex);
+	...
+	inserisci in vettore l'elemento in appena_prodotto
+	...
+	signal(mutex);
+	signal(piene);
+	} while(1);
+
+Struttura generale processo consumatore
+do {
+	wait(piene);
+	wait(mutex);
+	...
+	rimuovi un elemento da vettore e mettilo in da_consumare;
+	...	
+	signal(mutex);
+	signal(vuote);
+	...	
+	consuma l'elemento contenuto in da_consumare
+	...
+	} while (1);
+
+Problema dei lettori-scrittori
+Si consideri una base di dati da condividere tra numerosi processi concorrenti. Alcuni processi
+possono richiedere solo la lettura del contenuto mentre altri possono scriverci. Qualsiasi può
+effettuare letture concorrenti ma nel momento in cui uno scrive, l’altro non può ne leggere ne
+scrivere altrimenti vi è una incoerenza di dati. Per impedire tale problema è necessario che gli
+scrittori abbiano accesso esclusivo alla base dati condivisa. Vi possono essere 2 soluzioni a tale
+problema: il primo che nessun lettore attenda a meno che uno scrittore abbia gia la risorsa, la
+seconda che lo scrittore non attenda.
+Entrambe le soluzioni presenta il problema della starvation sullo scrittore nel primo caso e nel
+lettore nel secondo. La soluzione prevede l’utilizzo di un semaforo.
+
+Struttura generale processo scrittore
+wait(scrittura);
+	...	
+	esegui l'operazione di scrittura
+	...
+	signal (scrittura);
+
+Struttura generale processo lettore
+wait(mutex);
+numlettori++;
+if (numlettori==1)
+	wait(scrittura);
+signal(mutex);
+...
+esegui l'operazione di lettura
+...
+wait(mutex);
+numlettori--;
+if(numlettori == 0)
+	signal(scrittura);
+signal(mutex);
+
+Semaforo mutex, scrittura
+Int numlettori;
+i semafori mutex e scrittura sono inizializzati a 1, numlettori a 0. scrittura è comune a entrambi i
+processi. Il semaforo mutex si usa per assicurare la mutua esclusione. La soluzione del problema dei
+lettori-scrittori sono state generalizzate su alcuni sistemi in modo da fornire lock di lettura e
+scrittura.
+
+Problema dei 5 filosofi
+Cinque filosofi siedono ad una tavola rotonda con un piatto di spaghetti davanti, una forchetta a
+destra e una forchetta a sinistra (bastoncini cinesi secondo un'altra versione). Ci sono dunque cinque
+filosofi, cinque piatti di spaghetti e cinque forchette.
+Si immagini che la vita di un filosofo consista di periodi alterni di mangiare e pensare, e che ciascun
+filosofo abbia bisogno di due forchette per mangiare, ma che le forchette vengano prese una per
+volta. Dopo essere riuscito a prendere due forchette il filosofo mangia per un po', poi lascia le
+forchette e ricomincia a pensare. Il problema consiste nello sviluppo di un algoritmo che impedisca
+lo stallo (deadlock) o la morte d'inedia (starvation). Il deadlock può verificarsi se ciascuno dei
+filosofi tiene in mano una forchetta senza mai riuscire a prendere l'altra. Il filosofo F1 aspetta di
+prendere la forchetta che ha in mano il filosofo F2, che aspetta la forchetta che ha in mano il filosofo
+F3, e così via in un circolo vizioso. La situazione di starvation può verificarsi indipendentemente dal
+deadlock se uno dei filosofi non riesce mai a prendere entrambe le forchette. La presa di forchette è
+analoga al blocco di risorse limitate nella programmazione reale, situazione nota con il nome di
+concorrenza. Una semplice soluzione è quella di rappresentare ogni bacchetta con un semaforo.
+Questa soluzione garantisce che 2 vicini non mangino contemporaneamente.
+
+Struttura del fisilofo i
+do{
+wait(bacchetta[i]); // bacchetta dx 
+wait(bacchetta[(i+1)%5]); // bacchetta sx
+	...	
+	mangia
+	...
+	signal(bacchetta[i]);
+	signal(bacchetta[(i+1)%5]);
+	...
+	pensa
+	...
+	} while (1);
+
+
+6. MONITOR
+Benché i semafori costituiscono un meccanismo pratico ed efficace per la sincronizzazione dei
+processi, il loro uso scorretto può generare errori difficili da individuare in quanto si manifestano
+solo in determinate situazioni
+Se invece per errore di un programmatore o errore negligenza di programmazione vengo scambiati i
+semafori, allora il problema non si risolverà mail.
+Uso del costrutto monitor
+Un tipo di dato astratto che incapsula dati privati e dispone di metodi propri è il monitor. Al suo
+interno vengono definite una serie di operazioni che sono contraddistinte dalla muta esclusione.
+Pertanto una procedura al suo interno ha accesso unicamente alle variabili dichiarate localmente
+situate nel monitor. Il costrutto monitor assicura che all’interno di un monitor possa esser attivo un
+solo processo alla volta. Un programmatore definisce una o più variabili condizionali: le uniche
+operazioni su tali variabili sono le operazioni di signal e wait. Ci sono 2 possibilità:
+segnalare e attendere: P attende Q che lasci il monitor o attende su un’altra variabile condition
+segnalare e proseguire: Q attende che P lasci il monito o attende su un’altra variabile condition.
+
+Sintassi di un monitor 
+monitor nome_monitor
+{
+	dichiarazioni di variabili condivise
+
+	procedure body P1 (...) {
+	...
+	}
+	procedure body P2 (...) {
+	...
+	}
+	...
+	procedure body Pn (...) {
+	...
+	}
+	{
+	codice d'inizializzazione
+	}
+}	
+
+Soluzione al problema dei 5 filosofi per mezzo del monitor
+I concetti relativi al costrutto monitor presentando una soluzione esente da stallo del problema dei 5
+filosofi. Esistono vincoli nel quale un filosofo può prendere la forchetta solo nel caso in cui abbia
+entrambe le forchette disponibili.
+La distribuzione delle bacchette è controllata dal monitor. Ciascun filosofo prima di cominciare a
+mangiare deve invocare la funzione prende; ciò può determinare la sospensione del filosofo.
+Completata con successione l’operazione, il filosofo può mangiare. Infine posa le bacchette e si
+mette a pensare.
+
+monitor fc
+{
+	enum{pensa, affamato, mangia} stato[5];
+	condition auto[5];
+	
+	void prende(int i) {
+	stato[i] = affamato;
+	verifica[i];
+	if (stato[i] != mangia]
+	auto[i].wait();
+}
+
+	void posa(int i) {
+	stato[i] = pensa;
+	verifica ((i+4)%5);
+	verifica ((i+1)%5);
+	}
+
+	void verifica(int i) {
+	if((stato[(i+4)%5] =! mangia) &&
+	(stato [i] == affamato) && 
+	(stato[(i+1) %5] != mangia)) {
+		stato[i] = mangia;
+		auto[i].signal();
+		}
+	}
+	
+	void inizializzazione() {
+		for  (int i=0; i<5;i++)
+	stato[i] = pensa;
+		}
+	}
+
+
+
+
+

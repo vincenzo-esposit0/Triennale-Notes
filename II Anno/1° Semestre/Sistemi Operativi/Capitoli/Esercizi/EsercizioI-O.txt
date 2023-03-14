@@ -1,0 +1,54 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<fcntl.h>
+#include<wait.h>
+
+#define BUFSIZE 1024
+
+int main()
+{
+
+	int pid;
+	char mybuf[BUFSIZE], *p;
+	int in_fd, out_fd, n,n_caratteri=0;
+
+	pid=fork();
+
+	if(pid<0) printf("Errore nella fork\n");
+
+	else if(pid==0) //Figlio
+	{
+		signal(SIGINT,SIG_IGN);
+		in_fd=open("PIPPO.txt", O_RDONLY);
+		out_fd=open("TOPOLINO.txt", O_WRONLY | O_TRUNC | O_CREAT, 0600);
+
+		if(in_fd<0 || out_fd<0) printf("Errore nell'apertura di uno dei due file");
+
+		while( (n=read(in_fd,mybuf,BUFSIZE)) >0 )
+		{
+			n_caratteri+=n;
+			if(write(out_fd,mybuf,n)!=n)
+			{
+				printf("Errore nella write\n");
+			}
+		}
+		printf("Il numero di caratteri letti e': %d\n",n_caratteri);
+		exit(1);
+		close(in_fd);
+		close(out_fd);
+	}
+
+	else if(pid>0) //Padre
+	{
+		signal(SIGINT,SIG_IGN);
+
+		wait(NULL);
+		printf("Il pid del figlio e': %d\n",pid);
+		printf("Il figlio è terminato\n");
+		exit(1);
+	}
+
+return 0;
+
+}

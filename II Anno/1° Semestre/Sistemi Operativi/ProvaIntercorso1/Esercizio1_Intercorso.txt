@@ -1,0 +1,15 @@
+Eseguire il calcolo del tempo medio d'attesa con l'algoritmo di scheduling SJF con Prelazione.
+Tabella:
+P1 0 9
+P2 2 4
+P3 4 1
+P4 5 4
+
+All'istante 0 si avvisa il processo P1, poichè e' l'unico che si trova nella coda. 
+All'istante 2 arriva il processo P2, il tempo necessario per completare P1(7ms) è maggiore del tempo richiesto dal processo P2(4ms), perciò si effettua la prelazione del processo P1, sostituendolo con il processo P2.
+All'istante 4 arriva il processo P3, il tempo necessario per completare P2(2ms) è maggiore del tempo richiesto dal processo P3(1ms), perciò si effettua la prelazione del processo P2, sostituendolo con il processo P3.
+All'istante 5 arriva il processo P4, dato che P3 ha terminato la sua esecuzione, si confronta tra tutti i processi qual è quello con tempo di burst minore; il tempo necessario per completare P1(7ms), il tempo necessario per per completare P2(2ms) e il tempo necessario per completare P4(4ms); si puo evincere che verrà schedulato il processo P2 dato che è quello che ha tempo di esecuzione minore.
+Il processo P2 termina la sua esecuzione, si confrontano i processi restanti ovvere P1(7ms) e P4(4ms).
+Verrà schedulato P4 poichè è minore, al termine della sua esecuzione verrà eseguito P1.
+
+Tam=(9+1+0+2)/4=3.

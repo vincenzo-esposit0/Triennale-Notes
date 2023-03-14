@@ -1,0 +1,25 @@
+Algoritmo del Fornaio:
+
+do{
+scelta[i] = true;
+numero[i] = max(numero[0], numero[1], ..., numero [n-1]) +1;
+scelta[i]=false;	
+for(j=0; j<n;j++){
+while(scelta[j]);	
+while((numero[j] != 0)&&(numero [j,j] < numero [i,i]));
+}
+sezione critica
+numero[i] = 0;
+sezione non critica
+} while(1);
+
+Mutua Esclusione:
+Se Pi si trova nella propria sezione critica e Pk (k!=i) ha già scelto il proprio numero[k] != 0, allora: 
+(numero[i],i)<(numero[k],k).
+Se Pi è nella propria sezione critica e Pk tenta di entrare nella propria, il processo Pk esegue la seconda istruzione while per j==i, trova che:
+numero[i]!=0
+(numero[i],i)<(numero[k],k)
+Quindi continua il ciclo nell’istruzione while fino a che Pi  lascia la propria sezione critica.
+
+Progresso e Attesa Limitata:
+Questi requisiti sono garantiti poiché i processi entrano nelle rispettive sezioni critiche secondo il criterio FCFS .

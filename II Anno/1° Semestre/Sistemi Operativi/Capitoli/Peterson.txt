@@ -1,0 +1,25 @@
+Algoritmo di Peterson
+	
+do{
+pronto[i] = true;
+turno = j;
+while (pronto[j] && turno ==j);
+sezione critica
+pronto[i] = false;
+sezione non critica
+}while (1);
+
+Mutua Esclusione:
+Pi entra nella propria sezione critica solo se pronto[j]==false o turno==i. 
+Se entrambi i processi fossero contemporaneamente in esecuzione nelle rispettive sezioni critiche, si avrebbe pronto[i]==pronto[j]==true. 
+L’istruzione while non può essere eseguita da Pi e Pj contemporaneamente perché turno può assumere valore i o j, ma non entrambi. 
+Supponendo che Pj ha eseguito con successo l’istruzione while avremo che pronto[j]==true e turno=j, condizione che persiste fino a che Pj si trova nella propria sezione critica.
+
+Attesa limitata e Progresso:
+Si può impedire a un processo Pi di entrare nella propria sezione critica solo se questo è bloccato nel ciclo while dalla condizione pronto[j]==true e turno==j.
+Se Pj non è pronto per entrare, allora pronto[j]==false, e Pi può entrare nella propria sezione critica. 
+Se Pj è pronto per entrare, allora pronto[j]==true, se turno==i entra Pi, mentre se turno==j, entra Pj.
+Se entra Pj, all’uscita imposta pronto[j]==false e Pi può entrare.
+Pi entra nella sezione critica (progresso) al massimo dopo un ingresso da parte di Pj (attesa limitata).
+
+

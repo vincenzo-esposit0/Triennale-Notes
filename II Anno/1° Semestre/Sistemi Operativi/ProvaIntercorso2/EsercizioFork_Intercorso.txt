@@ -1,0 +1,4 @@
+Scrivere un programma C utilizzando le system call open, read, write, che implementi la  seguente situazione:
+un processo P crea un figlio F ed aspetta che il figlio termini. Sia il padre che il figlio dovranno ignorare il segnale SIGINT.
+Il figlio F copierà tutte le consonanti di un file di testo di nome PIPPO.txt, che già esiste nella directory corrente, in uno nuovo TOPOLINO.txt, contanto il numero di consonanti copiate.
+Dopo la terminazione del filgio il padre P stamperà sullo schermo un messaggio indicando il pid del figlio ed il fatto che è terminato e poi a sua volta terminerà.

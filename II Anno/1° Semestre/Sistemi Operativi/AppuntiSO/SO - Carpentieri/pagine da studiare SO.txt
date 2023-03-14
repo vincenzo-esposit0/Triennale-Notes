@@ -1,0 +1,21 @@
+Introduzione: 3-35
+Struttura SO: 61-73 & 81-95
+
+---Prima parte---
+Processi: 117-144
+Thread: 179-188
+Scheduling: 283-301 & 308 & 318-320 & 326-331
+Stallo: 343-351
+
+---Seconda parte---
+Sincronizzazione: 221-231 & 233-237 & 238-249
+Memoria centrale: 382-389 & 392-396 & 400-418 & 396-399
+Memoria virtuale: 433-464 & 466-471
+
+---Terza parte---
+File System: 554-582 & 586-587 & 587-591
+Realizzare un FS: 597-621 & 622-631
+Memoria secondaria: 511-515 & 518-540 
+
+---Ultima parte---
+Sistemi di I/O: 649-665 & 665-679 & 681-685

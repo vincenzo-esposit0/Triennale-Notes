@@ -1,0 +1,64 @@
+CAPITOLO 3
+
+1. CONCETTO DI PROCESSO
+Una questione importante che sorge nell’analisi dei S.O. è la definizione delle attività. Un sistema a lotti esegue i propri job mentre un sistema a partizione del tempo esegue task. Se un sistema esegue un solo processo alla volta, ossia che richiama nella CPU un processo quando è terminato quello precedente, si chiama sistema monoutente, altrimenti multiprogrammazione. Un processo è un’entità attiva. Ossia è un programma in esecuzione. Un programma è un’entità passiva, è costituito da un file binario residente nel disco che contiene il codice. Un programma diventa un processo quando viene caricato in memoria ed attende di essere eseguito dalla CPU.
+Un processo si può trovare in vari stati:
+Nuovo: il processo viene creato
+Attesa:il processo attende che si verifichi qualche evento
+Esecuzione: il processo si trova nella CPU ed è eseguito
+Pronto: il processo è pronto per essere assegnato alla CPU.
+Terminato: il processo ha terminato la sua esecuzione.
+Per tener traccia delle informazioni inerenti un processo, ogni processo viene rappresentato dal PCB. È un blocco che contiene molte informazioni sul processo quali il suo stato, lo scheduling della CPU, i registri della cpu, il program counter, informazioni sulla gestione della memoria, informazioni sulle risorse utilizzate dal processo e informazioni sullo stato di I/O.
+
+2. SCHEDULING DEI PROCESSI
+L’obiettivo della multiprogrammazione consiste nel massimizzare l’utilizzo della cpu in modo tale che risulti il maggior possibile operativa. L’obiettivo della partizione del tempo sta nel far eseguire un processo per un determinato tempo in modo tale che ad ogni utente risulti che stia utilizzando la cpu. Per questo motivo lo scheduler dei processi seleziona dalla coda dei processi un processo il quale viene posto in esecuzione nella cpu. Ogni processo è inserito nella coda dei processi, composta da tutti i processi del sistema. I processi presenti in memoria centrale che sono pronti e nell’attesa di essere eseguiti, vengono collocati nella coda dei processi pronti. Quando viene assegnato ad un processo la cpu, questo viene tolto dalla coda dei processi pronti ed eseguito finche non si verifichi o un’interruzione, o una richiesta di I/O oppure esso termini la sua esecuzione. Poichè nel sistema esistono molti processi, il disco può essere occupato con una richiesta di I/O di un altro processo. Per risolvere questo processo, ogni dispositivo ha una propria coda dei processi che attendono di ricevere informazioni da esso.
+Un nuovo processo inizialmente si colloca nella coda dei processi pronti che attende di essere selezionato e gli viene assegnata la cpu. Una volta che gli viene assegnata la cpu egli vi rimane finche non si verifichi una di queste condizioni:
+il processo richiede una operazione di IO e quindi viene inserito nella coda dei processi del dispositivo;
+il processo può creare un nuovo processo ed attenderne la terminazione;
+il processo può essere rimosso forzatamente dalla cpu a causa di un’interruzione ed essere inserito nella coda dei processi pronti.
+ 
+Scheduler
+Nel corso della sua esistenza, un processo si trova in varie code di scheduling. Il SO attraverso lo scheduler seleziona i processi dalle suddette code. Spesso accade che più processi vengono sottoposti in esecuzione di quanto se ne possono eseguire. Quindi questi processi vengono trasferiti in memoria secondaria, generalmente dei dischi dove si tengono fino al momento della loro esecuzione.
+Lo scheduler a lungo termine provvede a scegliere questi lavori e a caricarli in memoria centrali e li inserisce nella coda dei processi pronti.
+Lo scheduler a breve termine invece seleziona tra i processi pronti, i processi che devono essere assegnati alla cpu. Questi due scheduler si differenziano maggiormente per la frequenza in cui queste operazioni vengono effettuate, lo scheduler a breve temine seleziona processi molto velocemente, nell’ordine dei millisecondi mentre per lo scheduler a lungo termine possono passare anche diversi minuti prima che selezioni un nuovo processo. È importante che lo scheduler a lungo termine faccia un’accurata selezione dei processi che possono essere processo con prevalenza di IO (IO bounds) e processo con prevalenza di esecuzione (CPU bounds).
+Il altri sistemi operativi, come quello a partizione del tempo, è stato introdotto un livello di scheduling intermedio. Questo scheduling a medio termine quando un processo viene tolto dalla cpu, viene tolto anche dalla memoria centrale posto in quella secondaria e successivamente viene ricaricato. Questo schema si chiama avvicendamento dei processi in memoria.
+Cambio di contesto
+A volte sono le interruzioni ad indurre il SO a sospendere un processo ed eseguire routine del kernel. In presenza di molte interruzioni, si avranno rispettivamente anche numerosi cambi di contesto. Nel momento in cui la cpu decide di terminare l’esecuzione del processo, il SO deve salvare ogni informazione relativa al processo in modo che quando viene ricaricata, l’esecuzione continua nel punto in cui era stata interrotta. Quindi nel momento in cui si deve effettuare un cambio di contesto, il sistema salva nel suo PCB il contesto del processo, il valore dei registri della cpu, il valore del program counter.
+
+3. OPERAZIONE SUI PROCESSI
+Creazione di un processo
+Durante la propria esecuzione, un processo può crearne altri attraverso apposite chiamate di sistema. Si avrà quindi una distinzione tra processo padre e processo figlio. Ogni processo viene identificato attraverso un identificatore detto PID che può essere ottenuto attraverso la chiamata di sistema getpid(). Nel sistema UNIX per tener traccia di tutti i processi in esecuzione, basta lanciare nella shell il comando ps –el che permette di visionare tutte le informazioni sui processi. Quando si crea un nuovo processo, esso ottiene oltre alle varie risorse fisiche e logiche, i dati di inizializzazione che il processo padre passa al figlio. Quando un genitore crea un nuovo processo, per quel che riguarda l’esecuzione ci sono 2 possibilità:
+ - il genitore ed il figlio vengono eseguiti parallelamente
+ - il genitore aspetta la morte del figlio per continuare la propria esecuzione
+Ci sono anche 2 possibilità per quel che riguarda gli spazi di indirizzi
+il processo figlio è un duplicato del processo padre
+nel processo figlio si carica un nuovo programma (attraverso la chiamata di sistema exec()) Nel momento in cui viene eseguita la chiamata di sistema fork(), questa restituisce un pid che vale 0 se si riferisce al figlio, valore > 0 se si riferisce al padre. Nel momento in cui viene effettuata la chiamata di sistema fork(), vengono copiati i dati e gli spazi di indirizzo nel figlio.
+Terminazione di un processo
+Un processo termina quando finisce l’esecuzione della sua ultima istruzione e inoltra la richiesta al sistema operativo di essere cancellato usando la chiamata return, exit o _exit. La terminazione di un processo può avvenire anche il atre situazioni:
+ - il processo figlio ha acceduto nell’uso di alcune risorse che gli sono state assegnate.
+ - il compito del processo figlio non è più richiesto
+ - il processo genitore termina e quindi come succede in alcuni SO come VMS, se il processo genitore termina, tutti i suoi figlio terminano anch’essi.
+In UNIX se un processo padre termina mentre altri figli sono ancora in esecuzione, essi vengono affidati al processo init(), che assume il ruolo di nuovo genitore
+
+4. COMUNICAZIONE TRA PROCESSI
+I processi eseguiti concorrentemente, hanno bisogno di poter comunicare tra di loro per diversi motivi. Si ha una distinzione tra processi indipendenti i quali effettua la loro esecuzione senza dipendere da altri processi, oppure processi cooperanti che vengono influenzati o influenzano altri processi. La comunicazione è importante per diverse ragioni:
+ - Condivisione dell’informazione, poiché più utenti possono essere interessati alla stessa informazione
+ - Accelerazione del calcolo, se le attività vengono suddivise ed eseguite parallelamente
+ - Modularità
+ - Convenienza
+Per lo scambio di informazioni tra processi, vi sono delle tecniche di comunicazione delle IPC. Tale tecniche prevedono diversi metodi per lo scambio di informazioni : attraverso memoria condivisa oppure attraverso la coda di messaggi. Lo scambio di messaggi è utile quando si devono trasmettere piccole quantità di informazioni, altrimenti è meglio usare la memoria condivisa.
+Sistemi a memoria condivisa
+La comunicazione tra i processi avviene sulla base di una memoria condivisa che attraverso opportune chiamate di sistema tale memoria viene collocata nello spazio degli indirizzo del processo e successivamente si può accedere a tale memoria attraverso il suo identificatore univoco. Altri processi che intendono usarla devono annetterla al proprio spazzine degli indirizzi. Ad esempio la memoria condivisa viene utilizzato dal problema del produttore/consumatore. Nella memoria condivisa vengono tenuti gli elementi prodotti dal produttore e consumati dal consumatore. Vi sono 2 tipi di buffer: buffer illimitato che non pone limiti mentre il buffer limitato pone una dimensione al numero massimo di elementi che si possono produrre.
+Sistemi a scambio di messaggi
+Un altro modo per la comunicazione tra processi è quello dello scambio di informazioni attraverso lo scambio dei messaggi. La comunicazione avviene senza la condivisione dello spazio degli indirizzi e tramite le chiamate di sistema send e receive. Vi possono essere diversi tipi di comunicazione:
+comunicazione diretta o indiretta
+comunicazione sincrona o asincrona
+comunicazione automatica o esplicita.
+Per comunicare si devono disporre della possibilità di far riferimento ad altri processi. Con la comunicazione diretta ogni processo che invia o riceve dati, oltre al messaggio deve specificare il processo con cui vuole comunicare. Questo tipo di comunicazione ha la seguente caratteristica: ogni processo deve chiamarsi a vicenda e viene instaurato un canale tra i 2 processi. Questo tipo di scambio è detta simmetrica e una variante detta asimmetrica avviene tramite la specificazione solo da parte del processo che manda il messaggio, la specifica del processo ricevente.
+Con la comunicazione indiretta, lo scambio dei messaggi avviene tramite delle porte che sono degli oggetti in cui i processi prendono e mettono messaggi. La stessa porta deve essere condivisa da i processi che intendono usare questo tipo di comunicazione.
+La comunicazione tra processi avviene attraverso chiamate delle primitive send e receive. Le chiamate possono essere bloccanti o non bloccanti. Invio sincrono- ricezione sincrona: il processo che invia/riceve il messaggio attende che l’altro processo riceve/manda il messaggio
+Invio asincrono- ricezione sincrona: il processo che invia/riceve il messaggio continua la sua esecuzione.
+ 
+
+5. COMUNICAZIONE CLIENT SERVER
+Una socket è definita come l’estremità di un canale di comunicazione. Una coppia di processi che comunica attraverso una rete usa una coppia di socket, una per ogni processo e ogni socket è identificata attraverso un indirizzo IP concatenato a un numero di porta. Il cliente comunica con il server creando una socket e collegandosi per suo tramite alla porta su cui il server è in ascolto. Stabilita la connessione, il client può leggere dalla socket tramite le ordinarie istruzioni di IO. I messaggi vengono suddivisi in pacchetti ordinati correttamente ed inviati sulla socket. Si indirizzano ad un demone il quale provvederà a comporre il messaggio originale.

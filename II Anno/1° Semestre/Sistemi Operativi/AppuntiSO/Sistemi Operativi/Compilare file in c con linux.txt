@@ -1,0 +1,5 @@
+gc 
+gcc test.c
+ls
+./a.out
+lubuntu

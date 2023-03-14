@@ -1,0 +1,240 @@
+SEMAFORI
+Le varie soluzioni hardware al problema della sezione critica basate su istruzioni quali TestAndSet e Swap complicano l’attività del programmatore. Per ovviare questo problema si fa uso dei semafori.
+Un semaforo S è una variabile intera che si può accedere, escludendo l’inizializzazione, solo tramite due operazioni atomiche: wait e signal.
+Tutte le modifiche del semaforo sono contenute nelle operazioni wait e signal.
+wait(S){
+while (S<=0); //non opera;
+S--; }
+signal(S){
+S++;
+}
+Uso dei semafori
+Si usa distinguere tra semafori contatore il cui valore è illimitato e semafori binari il cui valore è 0 o 1.
+I semafori sono utilizzati per risolvere il problema della sezione critica con n processi che condividono un semaforo chiamato mutex inizializzato a 1.
+do{
+wait(mutex);
+sezione critica;
+signal(mutex);
+sezione non critica;
+} while(1);
+I semafori contatore vengono utilizzati nel controllo dell’accesso a una data risorsa. I processi che
+vogliono utilizzare il semaforo usano wait decrementando il valore. Quando restituiscono la risorsa
+effettuano la signal incrementando il valore.
+
+Realizzazione
+Il principale svantaggio dell’uso dei semafori è che richiede una condizione di attesa attiva. Mentre
+un processo si trova nella propria sezione critica, qualsiasi altro processo che tendi di entrarvi si
+trova sempre nel ciclo del codice della sezione di ingresso. Questo costituisce per un sistema a
+multiprogrammazione poiché l’attesa attiva spreca cicli alla CPU. Per superare l’attesa attiva si
+possono modificare signal e wait . quando un processo deve attendere anziché entrare nella attesa
+attiva si blocca se stesso e quindi la CPU sceglie un altro processo. Un processo bloccato che
+attende a un semaforo si riavvia attraverso l’operazione wakeup.
+La lista rappresenta i processi in attesa a un semaforo. L’operazione signal preleva un processo da
+tale lista e lo attiva. L’operazione block sospende il processo e l’operazione wakeup pone in stato di
+pronto per l’esecuzione il processo bloccato. Se il valore del semaforo è negativo, la sua dimensione
+è data dal numero dei processi che attendono a quel semaforo. I semafori devono essere eseguiti in
+modo atomico. Nei sistemi multiprocessore è necessario disabilitare le interruzioni di tutti i
+processori perché altrimenti le istruzioni dei diversi processi in esecuzione su processori distinti potrebbero interferire fra loro. 
+Le operazioni wait e signal non eliminano completamente l’attesa attiva ma si limitano a rimuoverla dalla sezione di ingresso.
+typedef struct{
+int valore;
+struct processo *L;
+} semaforo
+
+void wait(semaforo S){
+S.valore--;
+if(S.valore<0){
+togli un processo P da S.L;
+wakeup(P);
+}
+}
+
+void signal(semaforo S){
+S.valore++;
+if(S.valore<=0){
+togli un processo P da S.L;
+wakeup(P);
+
+Stallo e attesa indefinita
+La realizzazione di un semaforo con coda d’attesa può condurre a situazioni in cui ciascun processo di un insieme di processi attende indefinitamente un evento che può essere causato solo da uno dei processo dello stesso insieme. Quando si verifica una situazione di questo tipo ci troviamo in una situazione di stallo. Un insieme di processi è in stallo se ciascun processo dell’insieme attende un evento che può essere causato solida un altro processo dell’insieme. Un’altra questione connessa alle situazioni d istallo è quella dell’attesa indefinita.
+
+PROBLEMI TIPICI DI SINCRONIZZAZIONE
+Produttori consumatori con memoria limitata
+Il problema dei produttori/consumatori con memoria limitata si usa generalmente per illustrare la potenza delle primitive di sincronizzazione. Si supponga di disporre di una certa quantità di memoria rappresentata da un buffer con n posizioni, ciascuna capace di contenere un elemento. Il semaforo mutex garantisce la mutua esclusione degli accessi al buffer ed è inizializzato al valore 1. i semafori vuole e piene conteggiano rispettivamente il numero delle posizioni vuote e il semaforo piene si inizializza a 0.
+ 
+Struttura processo produttore
+do{
+...
+produce un elemento in appena_prodotto;
+...
+wait(vuote);
+wait(mutex);
+...
+inserisci in vettore l'elemento in appena_prodotto
+...
+signal(mutex);
+signal(piene);
+} while (1);
+
+Struttura generale del processo consumatore
+do{
+wait(piene);
+wait(mutex);
+...
+rimuovi un elemento da vettore e mettilo in da_consumare
+...
+signal(mutex);
+signal(vuote);
+...
+consuma l'elemento contenuto in da_consumare
+...
+} while(1);
+
+Problema dei lettori-scrittori
+Si consideri una base di dati da condividere tra numerosi processi concorrenti. Alcuni processi
+possono richiedere solo la lettura del contenuto mentre altri possono scriverci. Qualsiasi può
+effettuare letture concorrenti ma nel momento in cui uno scrive, l’altro non può ne leggere ne
+scrivere altrimenti vi è una incoerenza di dati. Per impedire tale problema è necessario che gli
+scrittori abbiano accesso esclusivo alla base dati condivisa. Vi possono essere 2 soluzioni a tale
+problema: il primo che nessun lettore attenda a meno che uno scrittore abbia gia la risorsa, la
+seconda che lo scrittore non attenda.
+Entrambe le soluzioni presenta il problema della starvation sullo scrittore nel primo caso e nel
+lettore nel secondo. La soluzione prevede l’utilizzo di un semaforo.
+ 
+Struttura generale di un processo scrittore
+wait(scrittura);
+...
+esegui l'operazione di scrittura;
+...
+signal(scrittura);
+
+Struttura generale di un processo lettore
+wait(mutex);
+numlettori++;
+if (numlettori==1)
+wait(scrittura);
+signal(mutex);
+...
+esegui l'operazione di lettura
+...
+wait(mutex);
+numlettori--;
+if(numlettori==0)
+signal(scrittura);
+signal(mutex);
+
+Semaforo mutex, scrittura
+Int numlettori;
+i semafori mutex e scrittura sono inizializzati a 1, numlettori a 0. scrittura è comune a entrambi i
+processi. Il semaforo mutex si usa per assicurare la mutua esclusione. La soluzione del problema dei
+lettori-scrittori sono state generalizzate su alcuni sistemi in modo da fornire lock di lettura e
+scrittura.
+
+Problema dei 5 filosofi
+Cinque filosofi siedono ad una tavola rotonda con un piatto di spaghetti davanti, una forchetta a
+destra e una forchetta a sinistra (bastoncini cinesi secondo un'altra versione). Ci sono dunque cinque
+filosofi, cinque piatti di spaghetti e cinque forchette.
+Si immagini che la vita di un filosofo consista di periodi alterni di mangiare e pensare, e che ciascun
+filosofo abbia bisogno di due forchette per mangiare, ma che le forchette vengano prese una per
+volta. Dopo essere riuscito a prendere due forchette il filosofo mangia per un po', poi lascia le
+forchette e ricomincia a pensare. Il problema consiste nello sviluppo di un algoritmo che impedisca
+lo stallo (deadlock) o la morte d'inedia (starvation). Il deadlock può verificarsi se ciascuno dei
+filosofi tiene in mano una forchetta senza mai riuscire a prendere l'altra. Il filosofo F1 aspetta di
+prendere la forchetta che ha in mano il filosofo F2, che aspetta la forchetta che ha in mano il filosofo
+F3, e così via in un circolo vizioso. La situazione di starvation può verificarsi indipendentemente dal
+deadlock se uno dei filosofi non riesce mai a prendere entrambe le forchette. La presa di forchette è
+analoga al blocco di risorse limitate nella programmazione reale, situazione nota con il nome di
+concorrenza. Una semplice soluzione è quella di rappresentare ogni bacchetta con un semaforo.
+Questa soluzione garantisce che 2 vicini non mangino contemporaneamente.
+ 
+do{
+wait(bacchetta[i]); //filosofo dx
+wait(bacchetta[(i+1)%5); //filosofo sx
+...
+mangia
+...
+signal(bacchetta[i]); //filosofo dx
+signal(bacchetta[(i+1)%5); //filosofo sx
+...
+pensa
+...
+} while (1);
+
+MONITOR
+Benché i semafori costituiscono un meccanismo pratico ed efficace per la sincronizzazione dei
+processi, il loro uso scorretto può generare errori difficili da individuare in quanto si manifestano
+solo in determinate situazioni
+Se invece per errore di un programmatore o errore negligenza di programmazione vengo scambiati i
+semafori, allora il problema non si risolverà mail.
+Uso del costrutto monitor
+Un tipo di dato astratto che incapsula dati privati e dispone di metodi propri è il monitor. Al suo
+interno vengono definite una serie di operazioni che sono contraddistinte dalla muta esclusione.
+
+monitor nome_monitor
+{
+dichiarazioni di variabili condivise
+
+procedure body P1(...){
+...
+}
+procedure body P2(...){
+...
+}
+...
+procedure body Pn(...){
+...
+}
+{
+codice d'inizializzazione
+}
+}
+
+Pertanto una procedura al suo interno ha accesso unicamente alle variabili dichiarate localmente
+situate nel monitor. Il costrutto monitor assicura che all’interno di un monitor possa esser attivo un
+solo processo alla volta. Un programmatore definisce una o più variabili condizionali: le uniche
+operazioni su tali variabili sono le operazioni di signal e wait. Ci sono 2 possibilità:
+segnalare e attendere: P attende Q che lasci il monitor o attende su un’altra variabile condition
+segnalare e proseguire: Q attende che P lasci il monito o attende su un’altra variabile condition.
+
+Soluzione al problema dei 5 filosofi per mezzo del monitor
+I concetti relativi al costrutto monitor presentando una soluzione esente da stallo del problema dei 5
+filosofi. Esistono vincoli nel quale un filosofo può prendere la forchetta solo nel caso in cui abbia
+entrambe le forchette disponibili.
+La distribuzione delle bacchette è controllata dal monitor. Ciascun filosofo prima di cominciare a
+mangiare deve invocare la funzione prende; ciò può determinare la sospensione del filosofo.
+Completata con successione l’operazione, il filosofo può mangiare. Infine posa le bacchette e si
+mette a pensare.
+
+monitor fc
+{
+enum{pensa,affamato,mangia} stato[5];
+condition auto[5];
+
+void prende(int i){
+stato[i] = affamato;
+verifica(i);
+if (stato[i]!= mangia)
+auto[i].wait();
+}
+
+void posa(int i){
+stato[i] = pensa;
+verifica((i+1) % 5);
+verifica((i+1)%5);
+}
+
+void verifica(int i){
+if((stato[(i+4) %5] =! mangia) &&
+(stato[i]==affamato)&&
+(stato[(i+1)%5]!=mangia)){
+stato[i] = mangia;
+auto[i].signal();
+}
+}
+
+void inizializzazione(){
+for(int i=0;i<5;i++)
+stato[i] = pensa;
+}
+}
+ 

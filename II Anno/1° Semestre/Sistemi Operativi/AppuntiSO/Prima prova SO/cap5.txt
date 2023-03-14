@@ -1,0 +1,161 @@
+1. CONCETTI FONDAMENTALI
+Lo scheduling della CPU è alla base dei sistemi operativi multiprogrammati: attraverso la commutazione del controllo della CPU tra i vari processi, il sistema operativo può rendere più produttivo il calcolatore.
+In un sistema monoprocessore si può eseguire al massimo un processo alla volta, gli altri processi devono aspettare che la CPU sia libera e possa essere nuovamente sottoposta a scheduling. L’idea della multiprogrammazione è relativamente semplice. Un processo è in esecuzione finche non deve attendere un evento, generalmente una richiesta di IO. Durante l’attesa la CPU resterebbe inattiva e tutto il tempo d’attesa sarebbe sprecato. Con la multiprogrammazione si cerca di rendere questi tempi produttivi, tenendo in memoria più processi e nel momento in cui quello che è in esecuzione riceve un’interruzione, questo viene messo in memoria e salvato il suo PCB e un nuovo processo viene assegnato alla CPU.
+Ciclicità delle fasi d’elaborazione e di IO
+L’esecuzione di un processo consiste in un ciclo di elaborazione ed un ciclo di completamento. I processi si alternano in questi due cicli fino al loro completamento. Comincia con una sequenza effettuata dalla CPU (CPU burst), seguita da una sequenza di operazioni di IO (IO burst) e cosi via fino a quando non viene inviata una richiesta di terminazione.
+Un programma con prevalenza di IO produce molta sequenza di operazioni della CPU a breve durata. Un programma con prevalenza di operazioni di elaborazione, produce poche sequenze di operazioni della CPU molte lunghe. Quindi deve sussistere un buon algoritmo per la scelta di queste operazioni.
+Scheduler della CPU
+Ogniqualvolta la CPU passa nello stato d’inattività, il sistema operativo sceglie per l’esecuzione uno dei processi presenti nella coda dei processi pronti. In particolare lo scheduler a breve termine che sceglie tra i processi presenti in memoria ad assegnarli alla CPU.
+Scheduling con diritto di prelazione
+Le decisioni riguardanti lo scheduling della CPU si possono prendere nelle seguenti circostanze:
+ -Un processo passa dallo stato di esecuzione in uno stato di attesa
+ -Un processo passa dallo stato di esecuzione allo stato di pronto
+ -Un processo passa dallo stato di attesa allo stato di pronto
+ -Un processo termina
+Il primo e il 4 caso non comporta alcuna scelta di scheduling; a essi segue la scelta di un nuovo
+processo da eseguire. Una scelta si deve fare nel caso 2 e 3.
+Quando lo scheduling interviene solo nei casi 1 e 4 è detto senza diritto di prelazione altrimenti è
+detto con diritto di prelazione. Nel primo caso, quando si assegna la CPU ad un processo pronto,
+questo rimane in possesso della CPU finche non ha terminato oppure al passaggio nello stato di
+attesa.
+Dispatcher
+Un altro elemento coinvolto nella funzione di scheduling della CPU è il dispatcher: si tratta di un
+modulo che passa effettivamente il controllo della CPU ai processi scelti dallo scheduler a breve
+termine. Questa funzione riguarda:
+ -Il cambio di contesto
+ -Il passaggio alla modalità utente
+ -Il salto alla giusta posizione del programma utente per riavviarne l’esecuzione
+Poiché si attiva ad ogni cambio di contesto, deve essere il più rapido possibile.
+
+2. CRITERI DI SCHEDULING
+Esistono diversi algoritmi di scheduling della CPU e hanno proprietà differenti e possono favorire
+una determinata classe di processi. Nella scelta dell’algoritmo di scheduling bisogna tener conto:
+ -Utilizzo della cpu: la CPU deve restare il più a lungo possibile in attività.
+ -Produttività: la CPU è attiva quando svolge del lavoro. Una misura del lavoro svolto è data
+dal numero dei processi completati nell’unita di tempo
+ -Tempo di completamento: ossia considerare il tempo che intercorre tra la sottomissione del
+processo e il completamento della sua esecuzione
+ -Tempo di attesa: l’algoritmo di scheduling della CPU non influisce su tempo impiegato per
+l’esecuzione di un processo o di un’operazione di IO. Il tempo di attesa è la somma degli
+intervalli d’attesa passati nella coda dei processi pronti.
+ -Tempo di risposta: il tempo di risposta è il tempo che intercorre tra la sottomissione di una
+richiesta e la prima risposta prodotta.
+
+3. ALGORITMI DI SCHEDULIG
+Scheduling in ordine di arrivo FCFS
+Il più semplice algoritmo di scheduling della CPU è quello della scelta dei processi in base
+all’ordine di arrivo. Tale algoritmo noto anche come FCFS sceglie il processo in testa alla coda
+FIFO. Quando un processo entra nella coda dei processi pronti, si collega il suo PC all’ultimo
+elemento della coda. Quando la CPU è libera si assegna al processo che si trova in testa alla coda. È
+spesso molto lungo. Un problema che si può verificare con la scelta di tale algoritmo è l’effetto del
+convoglio: tutti i processi attendono che un lungo processo liberi la CPU mentre nella coda ci sono
+processi a breve termine che attendono un lungo periodo. È senza prelazione, una volta che la CPU
+viene assegna ad un processo, questo lo trattiene fino al suo rilascio.
+Il tempo di attesa medio è di 17 millisecondi (0+24+27)/3=17
+
+Scheduling per brevità SJF
+Un criterio diverso è quello dello scheduling della CPU per brevità noto anche come SJF. Questo
+algoritmo associa per ogni processo la lunghezza della successiva sequenza di operazioni. Ogni
+volta si assegna la CPU al processo che ha la più breve sequenza. Se 2 processi hanno la stessa
+sequenza allora in questo caso si applica l’algoritmo FCFS.
+In questo caso il tempo di attesa è (3+16+9+0)/4=7.
+Si può dimostrare che è ottimale ma la difficoltà reale implica nel conoscere la durata della
+successiva richiesta di CPU. Tale algoritmo può essere sia con diritto di prelazione che senza. Nel
+caso di senza l’algoritmo continua la sua esecuzione così come è stato presentato, mentre con diritto
+se durante l’esecuzione di un processo arriva un nuovo processo in cui la sua sequenza è minore
+della sequenza restante del processo in esecuzione, allora tale processo viene posto nella coda dei
+processi pronti e quello appena arrivato viene assegnata la Cpu.
+
+Scheduling per priorità
+L’algoritmo SJF è un caso particolare del più generale algoritmo di scheduling per priorità. Tale
+algoritmo oltre a presentare la durata della sequenza, si associa una priorità a ogni processo e si
+assegna la CPU al processo con priorità più alta. Un algoritmo SJF non è altro che un algoritmo con
+priorità dove tale priorità è l’inversa della lunghezza.
+Il tempo medio di attesa è di 8.2 millisecondi.
+Le priorità si possono usare sia internamente che esternamente. Quelle internamente usano una o
+più quantità misurabili per calcolare la priorità del processo. Quelle esterne invece riguardano criteri
+esterni al sistema operativo. L’algoritmo per priorità è sia con diritto che senza diritto di prelazione.
+Un problema importante è il problema della starvation (attesa indefinita). Un processo pronto per
+l’esecuzione che non dispone della CPU si può considerare bloccato nell’attesa nel caso questo
+abbia una priorità bassa e non venga mai eseguito.
+Una soluzione a questo problema è costituita dall’invecchiamento. Ogni qualvolta passa un periodo
+di tempo un processo che sta nell’attesa della CPU ottiene una aumento graduale della priorità
+facendo cosi che venga prima o poi eseguito.
+
+Scheduling circolare Round Robin
+L’algoritmo circolare noto anche come Round Robin è stato progettato appositamente per i sistemi
+a partizione del tempo. Viene scelto un quanto di tempo che varia tra i 10 e i 100 millisecondi e
+trascorso questo lasso di tempo il processo viene interrotto e inserito nuovamente nella coda dei
+processi pronti. La coda dei processi viene gestita come una coda FIFO circolare.
+Nell’algoritmo RR la CPU si assegna a un processo per non più di un quanto di tempo per volta. Le
+prestazioni sono molto dipendenti alla scelta del quanto di tempo in quanto se è troppo lungo si
+avvicina all’algoritmo FCFS se troppo breve il criterio RR si chiama condivisione della CPU in
+quanto ad ogni utente sembra di disporre di una propria CPU ma che sia 1/n della velocità reale
+della CPU. Bisogna considerare il cambio di contesto che se vengono effettuate continuamente si
+porta ad uno spreco di tempo nei cambi di contesto. Il quanto di tempo deve quindi essere
+nettamente superiore al cambio di contesto in modo che ci possa essere una buona quantità di
+operazioni prima che il processo viene stoppato.
+
+Scheduling a code multiple
+E’ stata creata una classe di algoritmi di scheduling adatta a situazioni in cui i processi si possono
+classificare facilmente in gruppi diversi. Una distinzione diffusa è per esempio quella che si fa tra i
+processi che si eseguono in foreground e quelli in background. Un algoritmo a code multiple
+suddivide la coda dei processi pronti in code distinte, i quali vengono assegnati in modo permanente
+ad una coda ed ogni coda ha un proprio algoritmo di scheduling.
+Ogni coda ha la priorità assoluta sulle code di priorità più bassa. Nessun processo della coda dei
+processi in sottofondo può iniziare l’esecuzione finche le code per i processi di sistema non siano
+tutte vuote.
+Scheduling a code multiple con retroazione
+Di solito in un algoritmo di scheduling a code multiple i processi vengono assegnati ad una coda e
+non possono quindi cambiarla. Lo scheduling a code multiple con retroazione permette ai processi
+di spostarsi tra le code. L’idea consiste nel separare i processi che hanno caratteristiche diverse nelle
+sequenze delle operazioni della CPU. Si attua una forma di invecchiamento che impedisce il
+verificarsi di un’attesa indefinita.
+Lo scheduler fa eseguire tutti i processi della coda 0 attuando l’algoritmo RR con quanto=8, non
+appena si svuota esegue quelli in coda 1 con RR a quanto=16, infine quelli nella coda 2 con
+algoritmo FCFS. All’inizio tutti vengono collocati nella coda 0, i processi che non terminano
+vengono collocati nella coda 1 che a loro volta se non terminano vengono collocati nella coda 2.
+La definizione di scheduling a code multiple con retroazione costituisce il più grande criterio di
+scheduling della CPU, che nella fase di progettazione si può adeguare a un sistema specifico.
+
+4. SCHEDULING PER SISTEMI MULTIPROCESSORE
+Soluzioni di scheduling per multiprocessore
+Se sono disponibili più unita d’elaborazione, anche il problema dello scheduling è
+proporzionalmente più complesso.
+Una prima strategia di scheduling della CPU per i sistemi multiprocessore affida tutte la decisione
+ad un CPU detta master e tutti i processi utenti alle altre cpu. Quando invece ciascun processore
+provvede al proprio scheduling, si parla di multielaborazione simmetrica SMP.
+Predilezione per il processore
+Si consideri cosa accade alla memoria cache non appena che un processo abbia terminato la sua
+esecuzione nella CPU: i dati che ha trattato per ultimo permango nella cache, se il processo viene
+continuato da un altro processore, i contenuti della memoria cache devono essere invalidati sul
+processore di partenza e convalidati sull’altro. A causa di alti costi di svuotamento di memoria
+cache, si applicano delle regole impedendo ad un processo di passare da un processore ad un altro.
+Bilanciamento del carico
+Sui sistemi SMP è importante che il carico sia distribuito uniformemente tra i vari processori in
+modo da non permettere che un processore sia saturo un altro sia inattivo. Il bilanciamento del
+carico quindi tenta di ripartire il carico di lavoro uniformante tra i processi. Ci sono 2 tecniche di
+bilanciamento: migrazione guidata e migrazione spontanea. La prima prevede che un processo
+controlli costantemente il carico di ogni processore e quando verifica che uno sia saturo, sposta i
+processi su altri processori. La 2 invece fa si che un processore inattivo sottragga spontaneamente
+processi a processori saturi.
+Multithread simmetrico
+I sistemi SPM consentono l’esecuzione contemporanea, su processori fisici multipli di numerosi
+thread. Una possibile alternativa è quello che ha fatto l’intel noto come multithread simmetrico
+SMT che fornisce diversi processori logici. L’idea che caratterizza la SMT è la creazione di più
+processori logici basati sullo stesso processore fisico cosi da presentare al sistema operativo una
+serie di processori anche in presenza di uno solo fisico. Bisogna sapere che la SMT è a livello
+fisico, no software.
+ 
+5. SCHEDULING DEI THREAD
+Sui sistemi operativi che prevedono la presenza dei thread, il sistema pianifica l’esecuzione dei thread a livello kernel, non dei processi. I thread a livello utente sono gestiti da una libreria, il kernel non è consapevole della loro esistenza. Di conseguenza per eseguire i thread a livello utente occorre associare loro dei thread a livello kernel.
+6. VALUTAZIONE DEGLI ALGORITMI
+Ci si può chiedere quale algoritmo di scheduling della CPU bisogna applicare. Per scegliere un algoritmo occorre innanzitutto stabilire l’importanza relativa di queste misure. Bisogna rendere massimo l’utilizzo della CPU con il vincolo che il massimo tempo di risposta sia di 1 secondo e rendere massima la produttività in modo che il tempo di completamento si linearmente proporzionale al tempo d’esecuzione totale.
+La valutazione analitica, secondo l’algoritmo dato e il carico di lavoro del sistema, fornisce una formula o un numero che valuta le prestazioni dell’algoritmo per quel carico di lavoro. Consiste nel valutare gli algoritmi su dati concreti, i risultati ottenuti sono numeri esatti che consentono il confronto tra gli algoritmi.
+Reti di code
+Il sistema di calcolo si descrive come una rete di server, ciascuno con una coda d’attesa. La CPU è un server con la propria coda dei processi pronti e il sistema di IO ha le sue code dei dispositivi. Se sono noti l’andamento degli arrivi e dei servizi, si possono calcolare la lunghezza media delle code e il tempo medio d’attesa e cosi via.
+Simulazioni
+Per riuscire ad avere una valutazione più precisa degli algoritmi di scheduling, ci si può servire di simulazioni. Le simulazioni implicano la programmazione di un modello del sistema di calcolo; le strutture dati rappresentano gli elementi principali del sistema.
+Durante l’esecuzione della simulazione si raccolgono i dati che vengono stampati e confrontati. Poiché per effettuare una buona simulazione richiedono diverse ore del tempo di d’elaborazione, le simulazioni possono essere tuttavia molto onerose. Una simulazione dettagliata da risultati molto precisi ma richiede anche una grande quantità di tempo.
+Realizzazione
+Persino una simulazione ha dei limiti per quel che riguarda la precisione. L’unico modo assolutamente sicuro per valutar un algoritmo di scheduling consiste nel codificarlo, inserirlo nel sistema operativo e osservarne il comportamento nelle reali condizioni di funzionamento. Le spese sono dovute alla codifica dell’algoritmo e alle modifiche da fare al sistema operativo e alle reazioni degli utenti sulle modifiche del sistema operativo.

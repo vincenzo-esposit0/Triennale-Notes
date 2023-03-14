@@ -1,0 +1,16 @@
+Gestione blocchi liberi
+
+5. GESTIONE DELLO SPAZIO LIBERO 
+Poiché la quantità di spazio dei dischi è limitata, è necessario utilizzare lo spazio lasciato dai file cancellati per scrivere nuovi file. Per tener traccia dello spazio libero in un disco, il sistema conserva una lista dello spazio libero. Per creare file occorre cercare nella lista dello spazio la quantità di spazio necessaria e assegnarla al nuovo file  
+
+|||||VETTORE DI BIT
+Spesso la lista dello spazio libero si realizza come una mappa di bit o vettore di bit. ogni blocco è rappresentato da un bit: se il blocco è libero il bit è 1, altrimenti e 0. i vantaggi principali che derivano da questo metodo sono la sua relativa semplice ed efficienza nel trovare il primo blocco libero e n blocchi liberi consecutivi nel disco.  Sfortunatamente i vettori di bit sono efficienti solo se tutto il vettore è mantenuto in memoria centrale e viene di tanto in tanto scritto in memoria secondaria allo scopo di consentire eventuali operazioni di ripristino.   
+
+|||||LISTA CONCATENATA 
+Un altro metodo di gestione degli spazi liberi consiste nel collegarli tutti, tenere un puntatore al primo di questi in una speciale locazione del disco e caricalo in memoria. Questo primo blocco contiene un puntatore al successivo blocco libero e cosi via. Questo schema non è tuttavia efficiente: per attraversare la lista occorre leggere ogni blocco e l’operazione richiede un notevole tempo di IO. Fortunatamente l’attraversamento della lista dello spazio libero non è un’operazione frequente. Il metodo oche fa uso della fat include il conteggio dei blocchi liberi nella struttura dati per l’allocazione.  
+ 
+|||||RAGGRUPPAMENTO
+Una possibile modifica del metodo della lista dello spazio libero prevede la memorizzazione degli indirizzi in n blocchi liberi nel primo di questi. I primi n-1 sono effettivamente liberi, l’ultimo contiene l’indirizzo ai successivi n blocchi liberi. L’importanza è data dalla possibilista di trovare rapidamente gli indirizzi di un gran numero di blocchi liberi.   
+
+|||||CONTEGGIO
+Generalmente più blocchi contigui si possono allocare o liberare contemporaneamente, soprattutto quando lo spazio viene allocato usando l’algoritmo di allocazione. Anziché tener una lista di n indirizzi liberi, è sufficiente tenere l’indirizzo del primo e il numero di blocchi liberi. 

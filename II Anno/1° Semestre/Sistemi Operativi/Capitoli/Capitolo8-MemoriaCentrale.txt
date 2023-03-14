@@ -1,0 +1,223 @@
+CAPITOLO 8
+
+MEMORIA CENTRALE
+Uno dei risultati dello scheduling della CPU consiste nella possibilità di migliorare sia l’utilizzo della CPU sia la rapidità con cui il calcolatore risponde ai propri utenti. Per ottenere questo aumento delle prestazioni occorre tener il memoria parecchi processi: la memoria deve essere condivisa
+INTRODUZIONE
+La memoria è fondamentale nelle operazioni di un moderno sistema di calcolo; consiste in un ampio vettore di parole o byte, ciascuno con il proprio indirizzo. La CPU preleva le istruzioni dalla memoria sulla base del contenuto del program counter. Un tipico ciclo di esecuzione prevede che l’istruzione sia prelevata dalla memoria codificata ed eseguita, i risultati memorizzati in memoria. La memoria prevede solo un flusso di indirizzi, non sa come sono generati oppure a cosa servono.
+
+Dispositivi essenziali
+La memoria centrale e i registri incorporati nel processore sono le sole aree di memorizzazione a cui la CPU può accedere direttamente. Pertanto qualsiasi istruzione in esecuzione e tutti i dati utilizzati dalle istruzioni devono risiedere in uno di questi dispositivi per la memorizzazione ad accesso diretto. I registri incorporati nella CPU sono accessibili in genere nell’arco di un ciclo dell’orologio di sistema. Nei casi in cui l’accesso alla memoria richieda molti cicli di orologio, il processore entra necessariamente in stallo poichè manca dei dati richiesti per completare l’istruzione che sta eseguendo. Il rimedio consiste nell’interposizione di una memoria detta cache tra la CPU e la memoria centrale con lo scopo di ottenere le istruzioni dalla memoria centrale e trasferire alla cpu. È importante proteggere il sistema dall’accesso degli utenti. Innanzitutto bisogna assicurarsi che ciascun processo abbia uno spazio di memoria separato. Si può implementare il meccanismo di protezione tramite due registri, detti registri base e registri limite.
+Per mettere in atto il meccanismo della protezione la CPU confronta ciascun indirizzo generato in modalità utente con i valori dei due registri. Qualsiasi accesso di un processo utente ad un’area del sistema operativo genera eccezioni oppure come errore fatale. Solo il SO può caricare i registri base e limite grazie a una istruzione privilegiata.
+
+Associazione degli indirizzi
+In generale un programma risiede in un disco sotto forma di file binario. Per essere eseguito, il programma va caricato in memoria e inserito all’interno di un processo. Secondo il tipo di gestione della memoria adoperato, durante la sua esecuzione il processo può trasferire dalla memoria al disco e viceversa. L’insieme dei processi presenti nei dischi e che attendono d’essere trasferiti in memoria per essere seguiti forma la coda di ingresso. La procedura normale consiste nello sceglier uno dei processi appartenenti alla coda di ingresso e caricalo in memoria.
+Generalmente gli indirizzi del programma sorgente sono simbolici. Un compilatore di solito associa questi indirizzi a indirizzi rilocabili. L’editor dei collegamenti o il caricatore fa corrispondere a sua volta questi indirizzi rilocabili a indirizzi assoluti
+Generalmente l’associazione di istruzione e dati a indirizzi di memoria si può compiere in qualsiasi fase del seguente percorso.
+ - Compilazione. Se nella fase di compilazione si sa dove il processo risiederà in memoria, si può generare codice assoluto.
+ - Caricamento. Se nella fase di compilazione non è possibile sapere in che punto della memoria risiedere il processo, il compilatore deve generare codice rilocabile. Il questo caso si ritarda l’associazione finale degli indirizzi alla fase del caricamento. Se l’indirizzo iniziale cambia, è sufficiente ricaricare il codice utente per incorporare il valore modificato
+ - Esecuzione. Se durante l’esecuzione il processo può essere spostato da un segmento di memoria a un altro, si deve ritardare l’associazione degli indirizzi fino alla fase d’esecuzione.
+
+Spazi di indirizzi logici e fisici a confronto
+Un indirizzo generato dalla CPU di solito si indica come indirizzo logico, mentre un indirizzo visto
+dall’unita di memoria, cioè caricato nel registro dell’indirizzo di memoria di solito si indica come
+indirizzo fisico. I metodi di associazione degli indirizzi nelle fasi di compilazione e di caricamento
+producono indirizzi logici e fisici identici. Con i metodi di associazione nella fase d’esecuzione,
+invece, gli indirizzi logici non coincidono con gli indirizzi fisici. In questo caso si riferisce di solito
+agli indirizzi logici col termine di indirizzi virtuali. L’insieme di tutti gli indirizzi logici generati da
+un programma è lo spazio degli indirizzi logici, quelli degli indirizzi fisici è detto spazio degli
+indirizzi fisici. L’associazione nella fase d’esecuzione dagli indirizzi virtuali agli indirizzi fisici è
+svolta da un dispositivo detto unita di gestione della memoria MMU. Il registro base è ora
+denominato registro di rilocazione: quando un processo utente genera un indirizzo,, prima dell’invio
+all’unità di memoria, si somma tale indirizzo al valore contenuto nel registro di rilocazione.
+Il programma utente non considera mai gli indirizzi fisici reali. Il programma crea un puntatore alla
+locazione 346, lo memorizza, lo modifica con gli altri indirizzi, tutto ciò semplicemente come un
+numero. Solo quando assume il ruolo di un indirizzo di memoria si riloca il numero sulla base del
+contenuto del registro di rilocazione.
+Esistono 2 tipi di indirizzi: gli indirizzi logici (nell’intervallo da 0 a max) e indirizzi fisici
+(nell’intervallo da r+0 a r+max dove r è il registro base).
+
+Caricamento dinamico
+Per migliorare l’utilizzo della memoria si può ricorrere al caricamento diretto mediante il quale si
+carica una procedura solo quando viene richiamata; tutte le procedure si tengono in memoria
+secondaria in un formato di caricamento rilocabile. Si carica il programma principale in memoria e
+quando durante l’esecuzione una procedura deve richiamarne un’altra si controlla innanzitutto che
+sia stata caricata, altrimenti si richiama il caricatore di collegamento rilocabile per caricare il
+memoria la procedura richiesta e aggiornare le tabelle degli indirizzi del programma in modo che
+registrino questo cambiamento. Il vantaggio dato dal caricamento dinamico consiste nel fatto che
+una procedura che non si adopera non viene caricata.
+
+Caricamento dinamico e librerie condivise
+Alcuni SO consentono solo il collegamento statico, in cui le librerie di sistema del linguaggio sono
+trattate come qualsiasi altro modulo oggetto e combinate dal caricatore nell’immagine bina ria del
+programma. Senza questo strumento tutti i programmi di un sistema dovrebbero disporre all’interno
+dell’immagine eseguibile di una copia della libreria di linguaggio e tutto ciò richiede spazio nei
+dischi e in memoria centrale.
+Con il collegamento dinamico invece per ogni riferimento a una procedura di libreria si inserisce
+all’interno dell’immagine eseguibile una piccola porzione di codice di riferimento che indica come
+localizzare la giusta procedura nella libraria residente in memoria o che deve essere caricata.
+Durante l’esecuzione il codice di riferimento controlla se la procedura richiesta è in memoria
+altrimenti provvede a caricarla. Con questo metodo tutti i processi che usano una libreria del
+linguaggio si limitano a eseguire la stessa copia del codice della libreria e in caso di aggiornamento
+di libreria basta solo sostituire la vecchia con la nuova senza cambiare nulla nei codici. Solo i
+programmi compilati con la nuova libreria subiscono gli effetti delle modifiche, gli altri continuano
+ad avvalersi della vecchia libreria. A differenza del caricamento dinamico, il collegamento
+dinamico richiede generalmente l’assistenza del sistema operativo.
+
+Sovrapposizioni di sezioni
+Per permettere ad un processo di esser più grande della memoria che gli si assegna, si può usare una
+tecnica chiamata sovrapposizione di sezioni (overlay). Il concetto di sovrapposizione si sezioni si
+basa sulla possibilità di mantenere nella memoria soltanto le istruzioni e i dati che si usano con
+maggiore frequenza. Quando sono necessarie altre istruzioni queste si caricano nello spazio
+precedentemente occupato dalle istruzioni che non sono più in uso.
+es.
+Per caricare il tutto c’è bisogno di 200 KB. Se sono disponibili solo 150 il processo non può essere
+eseguito. Per essere eseguito è necessario che passo1 e passo2 non si trovino contemporaneamente
+in memoria. Terminato il passo uno il controllo passa al passo2 che si sovrappone al passo1.
+Questa tecnica non richiede alcun intervento del So ma può essere realizzata direttamente
+dall’utente per mezzo di semplici strutture di file, copiandone il contenuto nella memoria e quindi
+trasferendo il controllo a quest’ultima per eseguire istruzioni appena lette.
+
+AVVICENDAMENTO DEI PROCESSI (SWAPPING)
+Per essere eseguito un processo deve trovarsi in memoria centrale ma si può trasferire
+temporaneamente in memoria ausiliare da cui riporta il memoria centrale nel momento in cui si
+deve riprenderne l’esecuzione. Quando un processo termina es. con lo scheduling del RR esso viene
+scaricato in memoria secondaria e caricato il nuovo processo e successivamente ricaricato. Questo
+procedimento si chiama avvicendamento dei processi in memoria o anche SWAPPING.
+Il tempo in cui la CPU effettua le operazioni di un processo devono essere abbastanza lunghe per
+permetter ad un processo di effettuare molte operazioni prima che venga sostituito.
+Una variante di questo criterio d’avvicendamento dei processi s’impiega per gli algoritmi di
+scheduling basati sulle priorità. Se si presenta un processo con priorità maggiore, il gestore della
+memoria può scaricare dalla memoria centrale il processore con priorità inferiore per far spazio
+all’esecuzione del processo con priorità maggiore. Quando il processo con priorità maggior termina,
+si può ricaricar in memoria quello con priorità minore e continuare la sua esecuzione. Normalmente
+un processo quando viene scaricato deve essere ricaricato nello stesso spazio di memoria occupato
+prima. Questa limitazione è dovuta al metodo di associazione di indirizzi. Se l’associazione degli
+indirizzi logici a quelli finisci si effettua nella fase di assemblaggio o caricamento, il processo non
+può essere caricato altrove mentre se avviene in fase d’esecuzione può essere riversato in uno
+spazio di memoria diverso.
+L’avvicendamento dei processi richiede una memoria ausiliaria. Tale memoria ausiliaria deve
+essere abbastanza ampia da contenere le copie di tutte le immagini di memoria di tutti i processi
+utenti. Il sistema mantiene una coda dei processi pronti (ready queue) formati da tutti i processi
+pronti per l’esecuzione le cui immagini di memoria si trovano in memoria ausiliaria.
+Per utilizzare al meglio la CPU è necessario che il tempo d’esecuzione di ciascun processo sia lungo
+rispetto al tempo d’avvicendamento. Occorre notare che il maggior tempo di avvicandamento è data
+dal tempo di trasferimento .
+L’avvicendamento è soggetto ad altri vincoli. Per scaricare un processo è necessario essere certi che
+sia completamente inattivo soprattutto che non abbia operazioni di IO pendenti
+
+ALLOCAZIONE CONTIGUA DELLA MEMORIA
+La memoria centrale deve contener sia il SO che i vari processi che si voglio eseguire. Di solito si
+divide in 2 partizioni , una per il SO e l’altra per i processi utenti. Il SO si può collocare in memoria
+bassa che in quella alta ma normalmente viene collocata in memoria bassa vicino al vettore delle
+interruzioni.
+
+Rilocazione e protezione della memoria
+Tale protezione si può realizzare usando un registro di rilocazione che contiene il valore
+dell’indirizzo fisico minore, in registro limite contiene l’intervallo di indirizzi logici. Con i registri
+di rilocazione e limite, ogni indirizzo logico deve essere minore del contenuto del registro limite.
+Quando lo scheduler della CPU seleziona un processo per l’esecuzione il dispatcher durante l’esecuzione del cambio di contesto carica il registro di rilocazione e il registro limite con i valori corretti. Poi che si confronta ogni indirizzo generato dalla CPU con i valori contenuti in questi registri, si possono proteggere i l SO i programmi e ai dati di altri utenti.
+Lo schema con registro di rilocazione consente al SO di cambiar dinamicamente le proprie dimensioni. Tale flessibilità è utile in molte situazioni; il SO contiene codice e spazio di memoria per i driver dei dispositivi; se uno di questi non è comunemente usato è inutile tenere in memoria codice e dati poiché lo spazio occupata si potrebbe usare per altri scopi.
+
+Allocazione della memoria
+Uno dei metodi più semplici per l’allocazione della memoria consiste nel suddividere la stessa in partizioni di dimensione fissa. Ogni partizione deve contenere esattamente un processo quindi il grafo di multiprogrammazione è limitato dal numero di partizioni. Con il metodo delle partizioni multiple quando una partizione è libera può esser occupata da un processo presente nella coda d0ingresso; terminato il processo la partizione diviene nuovamente disponibile per un altro processo.
+Nello schema a partizione fissa il So conserva una tabella in cui sono indicate le porzioni di memoria disponibili e quelle occupate. Inizialmente tutta la memoria è a disposizione dei processi utenti, si tratta di un grande blocco di memoria disponibile, un buco. Quando si carica un processo che necessita di memoria, occorre cercare un buco sufficientemente grande da contenerlo. Se ne esiste uno si assegna solo al parte di memoria necessaria, la rimanente va usata per soddisfare eventuali richieste successive. Quando entrano nel sistema vengono inse4riti in una coda d’ingresso. Quando a un processo si assegna dello spazio il processo stesso viene caricato in caricato in memoria e quindi competere con il controllo della CPU. Al termine rilascia la memoria che gli era stata assegnata e il sistema operativo può impiegarla per un altro processo presente nella coda d’ingresso.
+Il SO può ordinare la coda d’ingresso secondo un algoritmo di scheduling. In generale è sempre presente un insieme di buchi di diverse dimensioni sparsi per la memoria. Quando si presenta un processo che necessita di memoria, il sistema cerca nel gruppo un buco di dimensioni sufficienti per contenerlo. Se è troppo grande in buco viene diviso in 2: uno che lo contiene e l’altra viene spostato nell’insieme dei buchi. Quando un processo termina si rilascia il blocco di memoria il quale viene inserito nell’insieme dei buchi liberi e se c’è un buco vicino questo viene accorpato in un unico buco più grande. Questa procedura è una particolare istanza del più grande problema dell’allocazione dinamica della memoria. I criteri più usati per scegliere un buco libero tra quelli disponibili sono i seguenti:
+ - First-fit. Si assegna il primo buco abbastanza grande. La ricerca può cominciare dall’inizio o dall’insieme dei buchi.
+ - Best-fit. Si assegna il più piccolo buco in grado di contener il processo. Si deve compiere la ricerca su tutta la lista
+ - Worst-fit. Si assegna il buco più grande e la ricerca avviene su tutta la lista.
+Con l’uso delle simulazioni si è dimostrato che sia first-fit che best-fit sono migliori di worst-fit
+
+Frammentazione
+Entrambi i criteri first-fit e best-fit soffrono della frammentazione esterna: quando si caricano e si rimuovono i processi dalla memoria, si frammenta lo spazio libero della memoria in tante piccole parti. Si ha la frammentazione esterna se lo sazio di memoria totale è sufficiente per soddisfare una richiesta, la memoria è frammentata in tanti piccole parti. Questo problema può essere molto grave in quanto riduce le prestazioni del sistema. La scelta del primo buco abbastanza grande porta uno spreco di un terzo della memoria. La frammentazione interna consiste nella differenza tra lo spazio assegnata e quello richiesto.
+Una soluzione al problema della frammentazione esterna è data dalla compattazione. Lo scopo è quello di riordinare il contenuto della memoria per riunire la memoria libera in un unico grosso
+blocco. Il più semplice algoritmo di compattazione consiste nello spostare tutti i processi verso un’estremità della memoria mentre tutti i buchi vengono spostati nell’altra direzione.
+
+PAGINAZIONE
+La paginazione è un metodo di gestione della memoria che permette che lo sazio degli indirizzi fisici di un processo non sia contiguo. Elimina il gravoso problema della sistemazione di blocchi di memoria di diverse dimensioni in memoria ausiliaria. Il problema insorge perché quando alcuni frammenti di codice o dati residente in memoria centrale devono essere scaricati, si deve trovare lo spazio necessario in memoria ausiliaria. I problemi di frammentazione relativi alla memoria centrale valgono anche per la memoria secondaria con la differenza che in questo caso l’accesso è molto più lento e quindi è impossibile eseguire la compattazione.
+
+Metodo di base
+Il metodo di base per implementare la paginazione consiste nel suddividere la memoria fisica in blocchi di dimensione costante detti anche grame o pagine fisiche e nel suddividere la memoria logica in blocchi di pari dimensioni detti pagine. Quando si deve eseguire un processo si caricano le sue pagine nei grame disponibile prendendole dalla memoria ausiliaria divisa in blocchi di dimensione fissa, uguale a quella dei frame della memoria.
+Ogni indirizzo generato dalla CPU è diviso in due parti: numero di pagina (p) e uno scostamento (d). il numero di pagina serve come indice per la tabella delle pagine contente l’indirizzo base in memoria fisica di ogni pagina. Questo indirizzo si combina con lo scostamento d che forma l’indirizzo fisico. La dimensione della pagina è definita dall’architettura e varia tra i 512 byte a 16 MB. La paginazione non è altro che una forma di rilocazione dinamica: ogni indirizzo logico l’architettura di paginazione fa corrispondere un indirizzo fisico. L’uso della tabella delle pagine è simile all’uso di una tabella di registri base uno per ciascun frame.
+Con la paginazione si può evitare la frammentazione esterna: qualsiasi frame libero si può assegnare a un processo che ne abbia bisogno. Pero c’è il problema della frammentazione interna nel caso peggiore in cui si ha un processo che necessita di n pagine + 1 byte e si devono allocare n+1 pagine con una frammentazione interna media di mezza pagina per processo. Questo fa si che si convenga usare pagine di piccole dimensioni.
+Quando si deve eseguire un processo si esamina la sua dimensione espressa in pagine. Se necessita di n pagine, devono essere disponibili almeno n frame.
+Un aspetto importante della paginazione è la netta distinzione tra la memoria vista dall’utente e l’effettiva memoria fisica: il programma utente vede la memoria come un unico spazio contiguo, contenente anche altri programmi. La differenza tra la memoria vista dall’utente e la memoria fisica è colmata dall’architettura di traduzione degli indirizzi.
+Poiché il SO gestisce la memoria fisica, deve essere informato dei relativi particolari di allocazione: quali grame sono assegnati, quali sono disponibili, il loro numero totale e cosi via. In genere queste informazioni sono contenute in una struttura dati chiamata tabella dei frame contenenti un elemento per ogni frame, indicante se sia libero oppure assegnato e se è assegnato a quale pagina di quale processo. Il SO conserva una copia della tabella delle pagine per ciascun processo, cosi come conserva una copia dei valori contenuti nel contatore di programma e nei registri. Questa coppia si usa per tradurr gli indirizzi logici in fisici ogni volta che il SO deve associare esplicitamente un indirizzo fisico a uno logico. La paginazione quindi fa aumentare il cambio di contesto.
+
+Architettura di paginazione
+Ogni SO segue metodi propri per memorizzare le tabelle della pagine. Il PCB contiene insieme col valore di altri registi, come il registro delle istruzioni, un puntatore della tabella delle pagine. Per avviare un processo il dispatcher ricarica i registri utente i imposta i corretti valore della tabella delle pagine fisiche usando la tabella della pagine presente in memoria e alitava al processo. L’architettura d’ausilio alla tabella della pagine può essere realizzata in modi diversi, nei casi più semplice attraverso dei registri. L’uso dei registri è efficiente se la tabella stessa è ragionevolmente piccola max 256 elementi. La maggior parte dei calcolati usa comunque tabella di pagine molto grandi quindi non si possono utilizzare registri ma si utilizza un registro che punta alla tabella delle pagine mantenuta in memoria. Il cambio della pagina richiede solo l’aggiornamento del puntatore. Questo metodo presenta un problema connesso al tempo necessario di accesso a una locazione della memoria i. per accedere a tale locazione di memoria occorre tener presente del valore del registro PTBR aumentato del numero di pagina relativo a i. si ottiene il numero del frame che associa allo scostamento di pagina producendo cosi l’indirizzo desiderata. La soluzione tipica al problema riscontrato per il doppio accesso, consiste nell’impiego di una speciale piccola cache ad alta velocità in cui ogni suo elemento consiste di due parti: una chiave e un valore che corrisponde al frame. La TBL contiene una piccola parte degli elementi della tabella delle pagine; quando la CPU
+genera un indirizzo logico, si presenta il suo numero di pagina alla TBL, se è presenta il
+corrispondente numero del grame è immediatamente disponibile e si usa per acceder alla memoria.
+Se non è presente nella TBL è noto come insuccesso nella TBL si cerca la tabella della pagina in
+memoria che viene utilizzato il valore per l’accesso in memoria. Se la TBL è piena, il SO deve
+sostituirne uno e si sceglie l’elemento usato meno recentemente. Alcune TBL memorizzano gli
+identificatori dello spazio d’indirizzi (ASID)in ciascun elemento della TBL. Un’ASID identifica in
+modo univoco ciascun processo e si usa per fornire al processo la protezione del suo spazio di
+indirizzi.
+
+Protezione
+In un ambiente paginato la protezione della memoria è assicurata dai bit di protezione associati a
+ogni frame. Normalmente tali bit si trovano nella tabella delle pagine. Un bit può determina se una
+pagina si può leggere e scrivere oppure solo leggere. Si può progettar un’architettura che fornisca la
+protezione di sola lettura, di sola scrittura o di sola esecuzione. In alternativa con bit di protezione
+distinti per ogni tipo d’accesso, si può ottenere una qualsiasi comunicazione di tali tipi d’accesso, i
+tentativi illegali causano l’invio di un segnale di eccezione al SO. Di solito si associa a ciascun
+elemento della tabella delle pagine un ulteriore bit, detto bit di validità. Tale bit se impostato a
+valido, indica che la pagina è nello spazio degli indirizzi logici del processo, altrimenti non lo è.
+Consente di riconoscere gli indirizzi illegali e di notificarne la presenza attraverso le eccezioni.
+Alcune architetture dispongono di registri, detti registri di lunghezza della tabella delle pagine per
+indicare le dimensioni della tabella.
+ 
+Pagine condivise
+Un altro vantaggio della paginazione consiste nella possibilità di condividere codice comune.
+Il codice rientrante, detto codice puro, è un codice non automodificante, non cambia durante
+l’esecuzione. Quindi due o più processi possono eseguire lo stesso codice nello stesso momento.
+Ciascun processo dispone di una propria copia dei registri e di una memoria dove conserva i dati
+necessari alla propria esecuzione.
+
+STRUTTURA DELLA TABELLA DELLE PAGINE
+Paginazione gerarchica
+La maggior parte dei moderni calcolatori dispone di uno spazio d’indirizzi logici molto grande(da
+2^32 a 2^64 elementi). Chiaramente sarebbe meglio evitare di collocare la tabella delle pagine in
+modo contiguo in memoria centrale. Una semplice soluzione a questo problema consiste nel
+suddividere la tabella delle pagine in parti più piccole; questo risultato si può ottenere in molti
+modi. Un metodo consiste nell’adottare un algoritmo di paginazione a due livelli, in cui la tabella
+stessa è paginata.
+
+Tabella delle pagine di tipo hash
+Un metodo di gestione molto comune degli spazi d’indirizzi relativi ad architetture oltre 32 bit
+consiste nell’impiego di una tabella delle pagine di tipo hash, in cui l’argomento della funzione hash
+è il numero della pagina virtuale.
+Ciascun elemento è composto da 3 campi: il numero della pagina virtuale, l’indirizzo del frame
+corrispondente alla pagina virtuale, un puntatore al successivo elemento. Si applica la funzione hash
+al numero della pagina virtuale contenuto nell’indirizzo virtuale, identificando un elemento della
+tabella. Si confronta il numero di pagina con il primo campo degli elementi della lista e se
+coincidono si usa l’indirizzo relativo ala frame per generare l’indirizzo fisico. Ho soluzione efficace
+per indirizzi sparsi
+
+Tabella delle pagine invertita
+Generalmente si associa una tabella delle pagine a ogni processo e tale tabella contiene un
+elemento per ogni pagina virtuale che il processo sta utilizzando , oppure un elemento per ogni
+indirizzo virtuale a prescindere dalla validità di quest’ultimo. Poiché la tabella è ordinata per
+indirizzi virtuali il sistema operativo può calcolare in che punto della tabella si trova l’elemento
+dell’indirizzo fisico associato e usare direttamente tale valore. Uno degli inconvenienti insiti in
+questo metodo è costituito dalla dimensione di ciascuna tabella delle pagine, che può contenere
+milioni di elementi e occupare grandi quantità di memoria fisica,, necessaria proprio per sapere
+com’è impiegata la rimanente memoria fisica. Per risolvere questo problema si può fare uso della
+tabella delle pagine invertita. Una tabella delle pagine invertita ha un elemento per ogni pagina reale
+o frame. Ciascun elemento è quindi costituito dell’indirizzo virtuale della pagina memorizzata in
+quella reale locazione di memoria con informazioni sul processo che possiede tale pagina. Ciascun
+indirizzo virtuale è una tripla del tipo seguente: <id-progesso,numero pagina, scostamento>. Viene
+ricercato tramite il pid il valore nella tabella della pagine se viene trovato lo scostamento più il
+valore il numero i.
+Sebbene riduca la quantità di memoria necessaria per memorizzar ogni tabella delle pagine, aumenta pero il tempo di ricerca nella tabella. Poiché la tabella delle pagine invertita è ordinata per indirizzi fisici, mentre la ricerca si effettua per indirizzi virtuali, si deve effettuare la ricerca sull’intera tabella. Per limitare il problema si può usare una tabella hash che riduce la cerca a un solo o a pochi elementi della tabella delle pagine. Nei sistemi che adottano le tabelle delle pagine invertite l’implementazione è difficoltosa.
+
+SEGMENTAZIONE
+Un aspetto importante della gestione della memoria, inevitabile alla presenza della paginazione, è quello della separazione tra la visione della memoria dell’utente e l’effettiva memoria fisica. Lo spazio d’indirizzi tra la visione della memoria dell’utente e l’effettiva memoria fisica. Lo spazio d’indirizzi visto dall’utente non coincide con l’effettiva memoria fisica, ma lo si fa corrispondere alla memoria fisica.
+
+Metodo di base
+Ci si potrebbe chiedere se l’utente può considerare la memoria come un vettore lineare di byte, alcuni dei quali contengono istruzioni e altri dati. La tipica struttura di un programma con cui i programmatori hanno familiarità è costituita di una parte principale e di un gruppo di procedure funzioni o mugoli insieme con diverse strutture dati come tabella, matrici, pile, variabili e cosi via. Ciascuno di questi moduli o elementi di dati si identifica con un nome: tabella di simboli, funzione sqrt,…gli elementi che si trovano all’interno di un segmento sono identificato dal loro scostamento, misurato dall’inizio del segmento: la prima istruzione del programma, il settimo elemento della tabella dei simboli, la quinta istruzione e cosi via. La segmentazione è uno schema di gestione della memoria che consente di gestire questa rappresentazione della memoria dal punto di vista dell’utente. Uno spazio d’indirizzi logici è una raccolta di segmenti ciascuno dei quali ha un nome e una lunghezza.
+Per semplicità i segmenti sono numerati e ogni riferimento si compie per mezzo di un numero anziché di un nome; quindi un indirizzo logico è una coppia < numero di segmento, scostamento>
+
+Architettura di segmentazione
+Sebbene l’utente possa far riferimenti agli oggetti del programma per mezzo di un indizio bidimensionale, la memoria fisica è in ogni caso una sequenza di byte unidimensionale. Per questo motivo occorre tradurre gli indirizzi bidimensionali definiti dall’utente negli indirizzi fisici unidimensionali. Questa operazione si come tramite una tabelle dei segmenti: ogni suo elemento p una coppia ordinata: la base del segmento e il limite. La base contiene l’indirizzo fisico iniziale della memoria dove il segmento risiede mentre il limite del segmento contiene la lunghezza del segmento. Un indirizzo logico è comprato da 2 parti: un numero di segmento s e un scostamento di segmento d. Il numero di segmento si usa come indice della tabella dei segmenti, lo scostamento d dell’indirizzo logico deve essere compreso tra 0 e il limite del segmento, altrimenti si invia un’eccezione. Se tale condizione è rispettata, si somma lo scostamento alla base del segmento per produrre l’indirizzo della memoria fisica dove si trova il byte desiderato.
+ 

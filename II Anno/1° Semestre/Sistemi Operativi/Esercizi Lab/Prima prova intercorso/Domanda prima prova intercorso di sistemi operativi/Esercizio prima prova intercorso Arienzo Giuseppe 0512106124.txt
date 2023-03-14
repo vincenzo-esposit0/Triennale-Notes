@@ -1,0 +1,83 @@
+/* Versione originale: */
+/*
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
+
+int main(){
+	int pid1,pid2,pid3,status;
+	pid1=fork();
+	if(pid1<0){
+		println("Errore processo 1");
+		exit(1);
+	}else if(pid1==0){
+		println("Il nome di mio padre è: %d", getppid());
+	}else{
+		pid2=fork();
+		if(pid2<0){
+			printf("Errore processo 2");
+			exit(1);
+		}else if(pid2==0){
+			printf("Somma padre+me : %d",getppid()+getpid());
+		}else{
+			pid3=fork();
+			if (pid3<0){
+				println("Errore processo 3");
+				exit(1);
+			}else if(pid3==0){
+				println("Il mio pid è: %d",getpid());
+			}else{	
+				println("il filgio con pid %d è terminato", waitpid(pid1,status,0));
+				println("il filgio con pid %d è terminato", waitpid(pid2,status,0));
+				println("il filgio con pid %d è terminato", waitpid(pid3,status,0));
+			}
+	exit(0);
+}
+*/
+
+/*Versione corretta: */
+
+/* modifiche generali applicate:
+	correzioni istruzione println con printf
+	eliminazione parentesi superflue sugli if
+	aggiunta di messaggi per maggiore chiarezza delle printf
+*/
+
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h> /*include assente nella versione originale*/
+
+void main(){ /*modifica main da int a void*/
+	int pid1,pid2,pid3,status;
+	pid1=fork();
+	if(pid1<0){
+		printf("Errore processo 1\n");
+		exit(1);
+	}else if(pid1==0)
+		printf("Figlio uno: il nome di mio padre è: %d\n", getppid());
+	else{
+		pid2=fork();
+		if(pid2<0){
+			printf("Errore processo 2\n");
+			exit(1);
+		}else if(pid2==0)
+			printf("Figlio due: la somma padre+me : %d\n",getppid()+getpid());
+		else{
+			pid3=fork();
+			if (pid3<0){
+				printf("Errore processo 3 \n");
+				exit(1);
+			}else if(pid3==0)
+				printf("Figlio tre: Il mio pid è: %d \n",getpid());
+			else{	
+				printf("il figlio con pid %d è terminato \n", waitpid(pid1,&status,0));	/* Mancato passaggio per riferimento status*/
+				printf("il figlio con pid %d è terminato \n", waitpid(pid2,&status,0));	/* Mancato passaggio per riferimento status*/
+				printf("il figlio con pid %d è terminato \n", waitpid(pid3,&status,0));	/* Mancato passaggio per riferimento status*/
+			}	/*Mancata chiusura parentesi else*/
+                }		/*Mancata chiusura parentesi else*/
+        }			/*Mancata chiusura parentesi else*/
+	exit(0);
+}

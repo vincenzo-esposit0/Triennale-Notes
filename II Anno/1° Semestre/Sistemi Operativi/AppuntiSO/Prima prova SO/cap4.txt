@@ -1,0 +1,44 @@
+1. INTRODUZIONE
+Un thread è un percorso di controllo d’esecuzione all’interno di un processo.
+Un thread è l’unita di base d’uso della Cpu e comprende un identificatore di thread, un contatore di programma, un insieme di registri e una pila. Condivide con gli altri thread che appartengono allo stesso processo la sezione del codice, i fati, altre risorse. Un processo tradizionale, chiamato anche processo pesante, è composto da un solo thread. Un processo multithread è composto da più thread. Molti programmi per i moderni pc sono predisposti per essere eseguiti da processi multithread. Ad esempio una pagina web può assegnare un thread per la richiesta dei dati, uno per la visualizzazione a video, ecc.
+I thread hanno anche il ruolo primario nei sistemi che impiegano le RPC; si tratta di un sistema che permette la comunicazione tra processi, fornendo un meccanismo di comunicazione simile alle normali chiamate di sistema. Molti kernel di sistemi operativi sono multithread.
+Vantaggi
+I vantaggi della programmazione multithread si possono classificare secondo 4 fattori principali:
+ -Tempo di risposta: rendere multithread un’applicazione interattiva può permettere a un programma di continuare la sua esecuzione, anche se una parte di esso è bloccata o sta eseguendo una operazione particolarmente lunga.
+ -Condivisione delle risorse: normalmente i thread condividono la memoria e le risorse del processo cui appartengono. Il vantaggio della condivisione del codice consiste nel fatto che un’applicazione può avere molti thread di attività diverse, tutti nello stesso spazio degli indirizzi
+ -Economia: assegnare memoria e risorse per la creazione di nuovi processi è costoso: poiché i thread condividono le risorse del processo cuoi appartengono, è molto più vantaggioso creare thread e gestirne i cambi di contesto
+ -Uso di sistemi multiprocessore: i vantaggi della programmazione multithread aumentano notevolmente nelle architetture multiprocessore dove i thread si possono eseguire in parallelo
+
+2. MODELLI DI PROGRAMMAZIONE MULTITHREAD
+I thread possono essere distinti in thread a livello utente e thread a livello kernel: i primi sono gestiti senza l’aiuto del kernel, i secondi sono gestiti direttamene dal SO.
+Modelli da molti a uno
+Il modello da molti a uno fa corrispondere molti thread a livello utente a un singolo thread a livello kernel. Poiché si svolge nello spazio utente, la gestione dei thread risulta efficiente, ma l’intero processo rimane bloccato se un thread invoca una chiamata di sistema di tipo bloccante. Inoltre poiché un solo thread alla volta puoi accedere al kernel, è impossibile eseguire thread multipli in parallelo in sistemi multiprocessore.
+ 
+Modello da uno a uno
+Il modello da uno a uno mette in corrispondenza ciascun thread a livello utente con un thread a
+livello kernel. Questo modello offre un grado di concorrenza maggiore rispetto al precedente,
+poiché anche se un thread invoca una chiamata di sistema bloccante, è possibile eseguire un altro
+thread. L’unico svantaggio di questo modello è che la creazione di ogni thread a livello utente
+comporta la creazione del corrispondente thread a livello kernel.
+Modello da molti a molti
+Il modello da molti a molti mette in corrispondenza di più thread a livello utente con un numero
+minore o uguale di thread a livello kernel; quest’ultimo può essere specifico per un carta
+applicazione o per un particolare calcolatore. Nonostante il modello da molti a uno permette di
+creare tanti thread a li vello utente quanti ne desiderino, non viene garantita una concorrenza reale.
+Il modello da molti a molti non presenta difetti come quelli da uno a uno e da molti a uno. I
+programmatori possono creare liberamente i thread che ritengono necessari e i corrispondenti thread
+a livello kernel si possono eseguire in parallelo nelle architetture multiprocessore. Inoltre se un
+thread impiega una chiamata di sistema bloccante, il kernel può fare in modo che si esegua un altro
+thread.
+
+3. LIBRERIE DEI THREAD
+La libreria dei thread fornisce al programmatore una api per la creazione e la gestione dei thread. I
+metodi con cui implementare una libreria dei thread sono essenzialmente due. Nel primo la libreria
+è collocata interamente a livello utente, senza far ricorso al kernel. Il codice e le strutture dati per la
+libreria risiedono tutti nello spazio degli indirizzi. Questo implica che invocare una funzione della
+libreria si traduce in una chiamata locale a una funzione nello spazio degli utenti. Il secondo metodo
+consiste nell’implementare una libreria a livello kernel, con l’ausilio diretto del sistema operativo.
+In questo caso il codice e le strutture dati per la libreria si trovano nello spazio del kernel. Innovare
+una funzione della api per la libreria provoca una chiamata di sistema al kernel.
+ 
+

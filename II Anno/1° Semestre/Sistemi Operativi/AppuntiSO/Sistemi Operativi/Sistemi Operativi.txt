@@ -1,0 +1,15 @@
+Bruno Carpientieri bc@dia.unisa.it nome e cognome matricola e oggetto=nome del corso!ci serve il libro ! tre prove intercorso importantissime D!un sistema operativo  e un insieme di progrsammi che gestisce gli elementi fisici del calcolatore, e fornisce una piattaforma a programmi esso ( non esiste una vera e propria definizione ma si va un po a braccio) controlla e cordina l uso delle risrse hardware su ruchiesta dei vari programmi!Perche lo usiamO? per eseguire un programma utente e rendere pui semplice i problemi del utente! esso deve utilizzare al meglio l hardwar,le risorse del sistems(cpu ,sistemi di input output)!Esso esiste per fornire agli utenti uno strumento conveniente per l uso di un sistema di calcolo,"convenieza= facile,efficente, esso e quello piu strettamente connesso con l hardwarre;Quindi 
+allocatore di risorse= du fronte a richieste conflittuali, decide come assegnare equamente le risorse del programma;
+Programma di controllo=garantisce l'esecuzione dei programmi
+esecutori di funzioni comuni=!
+nucleo=(kernel) l unico sempre attiva che aspetta a noi!
+"concorrentemente"
+Possiamo schematizzare in 
+1(parti= hardware livello piu basso 
+2(sistema operatico che controlla e coordina 
+3(Programmi Applicativi definiscono il modo in cui le risorse del sistema sono utilizzate
+ 4( Utenti=persone ,macchinari!
+Funzionamento di un sistema di calcolo= i dispositivi I/O e la cpu possono operari in modo concorrente , ciascun controllore di dispositivo e responsabile di un altro!
+Seganle di interruzione= causa 
+Struttura della memoria=( memoria secondaria)
+Memoria centrale= 
