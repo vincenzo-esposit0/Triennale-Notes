@@ -1,0 +1,44 @@
+import java.sql.*; 			//Permette di effettuare la connessione del DB
+public class esercizioJDBC { 
+public static void main(String[] arg) { 
+esercizioJDBC.executeEsercizio(5); 
+} 
+
+public static void esercizio(int x) 
+{ 
+Connection con = null ; 
+try { 
+Class.forName("com.mysql.cj.jdbc.Driver");	//Driver per effettuare la connessione 
+String url = "jdbc:mysql://localhost:3306/nomeDB"  //Url path che arriva al nostro DB
+String username = “”; 
+String pwd = “”; 
+
+con = DriverManager.getConnection(url,username,pwd);  	//Effettuiamo la connessione
+} 
+catch(Exception e){
+System.out.println("Connessione fallita!!!"); 
+}
+
+... 
+
+try { 
+String query = "SELECT condominio, scala, interno" + 
++ " FROM rif_appartamento JOIN spesa ON " 
++ " rif_appartamento.spesa = spesa.codice " 
++ " GROUP BY condominio, scala, interno " 
++ " HAVING SUM(importo) >= "+x;
+ 
+Statement pquery = con.createStatement(); 
+ResultSet result = pquery.executeQuery(query); 
+
+System.out.println("Ecco i condomini che hanno pagato più + + di "+x+" euro per spese"); 
+
+while (result.next()) { 
+String condominio = result.getString("condominio"); 
+String scala = result.getString("scala"); 
+int interno = result.getInt("interno"); 
+System.out.println(condominio+" \t "+scala+" \t "+interno); } 
+} 
+catch (Exception e){ System.out.println("Errore nell'interrogazione");
+ } 
+}}

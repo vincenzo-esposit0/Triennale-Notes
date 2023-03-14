@@ -1,0 +1,612 @@
+public static void Query1() {
+		Scanner in = new Scanner(System.in);
+		
+		Connection con = Connessione();
+		
+		try {
+			
+			System.out.println("Q1: Prenotazione di una struttura. \n");
+			
+			System.out.println("Inserisci il codice fiscale del segretario : ");
+			String codfis=in.next();
+			
+			Statement query0 = con.createStatement();
+			ResultSet result0 =query0.executeQuery("Select * from segretario "
+					+ "where CodiceFiscale ='"+codfis+"'");
+			if(result0.next())System.out.println("Il segretario esiste! \n");
+			else throw new Exception("Il segretario non esiste! \n");
+			
+			System.out.println("Vuoi prenotare una struttura che ha una Sala o un Campo? "); 
+			System.out.println("1)Sala "
+			   		+ "\n2)Campo");
+			int sc= in.nextInt();
+			   
+			switch(sc) {
+			   	
+			case 1:
+			
+				System.out.println("La struttura che vuoi prenotare deve avere una sala che contiene attrezzature?");
+			   	System.out.println("1)Si "
+			   				+ "\n2)No");
+			   	int sc1= in.nextInt();
+				
+				if(sc1==1) {
+					
+					/*
+					 * Controllo ed inserimento di strutture che hanno sale con attrezzature
+					 */
+					
+					System.out.println("Strutture che hanno una sala con attrezzature: ");
+					
+					Statement querysc = con.createStatement();
+					
+					ResultSet resultsc = querysc.executeQuery("SELECT *"
+							+ "FROM struttura "
+							+ "WHERE PresenzaAttrezzatura='si'");	
+					
+					while(resultsc.next()){
+						
+						String codiceStruttura = resultsc.getString("CodiceStruttura");
+						
+						String nomeCentro= resultsc.getString("NomeCentro");
+						
+						String tipo = resultsc.getString("Tipo");
+						
+						String presenzaAttrezzatura = resultsc.getString("PresenzaAttrezzatura");
+						
+			
+						System.out.println("Codice Struttura: "+codiceStruttura +"\nDenominazione Centro: "+nomeCentro+",\t Tipo: " +tipo+ ",\t Presenza Attrezzature: " +presenzaAttrezzatura+ "\n");
+			 
+					}
+					
+					System.out.println("Inserisci il codice struttura : ");
+					String codice=in.next();
+					
+					System.out.println("Inserisci il nome centro : ");
+					String nomecentro=in.next();
+					
+					Statement query1 = con.createStatement();
+					ResultSet result1 =query1.executeQuery("Select * from struttura "
+							+ "where CodiceStruttura ='"+codice+"' "
+							+ "and NomeCentro ='"+nomecentro+"' "
+							+ "and PresenzaAttrezzatura='si'");
+					
+					if(result1.next())System.out.println("La struttura esiste e la sala presenta attrezzature!\n");
+					else throw new Exception("La struttura non esiste!\n");
+					
+					System.out.println("Inserisci la data : ");
+					String data=in.next();
+					
+					int orai;
+					while(true) {
+					
+						System.out.println("Inserisci l'ora (9 - 23): ");
+						orai=in.nextInt();
+					
+						if(9<=orai&&orai<=23)
+							break;
+						
+					}
+					String ora=""+orai+":00:00";
+					
+					int duratai;
+					while(true) {
+					
+						System.out.println("Dammi durata max ("+(24-orai)+"): ");
+						duratai=in.nextInt();
+						
+						if(duratai<=(24-orai))
+							break;
+					
+					}
+					
+					Statement query = con.createStatement();
+					ResultSet result =query.executeQuery("select * from prenotazione "
+							+ "where DataP ='"+data+"'"
+							+ "and CodiceStruttura ='"+codice+"'"
+							+ "and NomeCentro ='"+nomecentro+"'");   
+			        
+					while(result.next()) {
+						
+						Time orap = result.getTime("OraP");
+						int orain=orap.getHours();
+						
+						if(orai<=orain && orain<(orai+duratai))	throw new Exception("La struttura non puo essere prenotata!\n");
+						
+					}
+					String durata=""+duratai+"";
+			       
+					System.out.println("Inserisci la descrizione : ");
+					String descrizione=in.next();
+					
+					System.out.println("Inserisci il codice attività : ");
+					String attivita=in.next();
+					
+					Statement query2 = con.createStatement();
+					ResultSet result2=query2.executeQuery("select Istruttore from presiede "
+							+ "where CodiceAttivita ='"+attivita+"'");
+					
+					while(result2.next()) {
+						
+						String codicefiscale = result2.getString("Istruttore");
+						Statement query3 = con.createStatement();
+						ResultSet result3=query3.executeQuery("select CodiceAttivita from presiede "
+								+ "where Istruttore ='"+codicefiscale+"'");
+						
+						while(result3.next()) {
+							
+							String codicecontrollo = result3.getString("CodiceAttivita");
+							Statement query4 = con.createStatement();
+							ResultSet result4=query4.executeQuery("select * from prenotazione "
+									+ "where DataP ='"+data+"'"
+									+ "and OraP ='"+ora+"'"
+									+ "and CodiceAttivita ='"+codicecontrollo+"'");
+							if(result4.next())throw new Exception("Impossibile effettuare la prenotazione "
+									+ "dato che l'istruttore "+codicefiscale+" dell'attivita che si vuole "
+											+ "prenotare è già impegnato in data "+data+" in ora "+ora);
+						}
+							
+					}
+					
+					System.out.println("E' possibile effetture la prenotazione; \n"
+							+ "Elaborazione in corso..");
+					
+					String que="INSERT INTO prenotazione"
+							+ "(`DataP`, `OraP`, `Durata`, `Descrizione`, `Segretario`," + 
+							"`CodiceStruttura`, `NomeCentro`, `CodiceAttivita`)"
+							+ "VALUES(?,?,?,?,?,?,?,?)";
+				    PreparedStatement pstmt = con.prepareStatement(que,Statement.RETURN_GENERATED_KEYS); 
+				        
+				        pstmt.setString(1, data);
+				        pstmt.setString(2, ora);
+				        pstmt.setString(3, durata);
+				        pstmt.setString(4, descrizione);
+				        pstmt.setString(5, codfis);
+				        pstmt.setString(6, codice);
+				        pstmt.setString(7, nomecentro);
+				        pstmt.setString(8, attivita);
+				        int affectedRows = pstmt.executeUpdate();
+				        
+				        System.out.println("Prenotazione effettuata con successo!");
+						
+				}
+				else if(sc1==2){
+					
+					/*
+					 * Controllo ed inserimento di strutture che hanno sale senza attrezzature
+					 */
+					
+					System.out.println("Strutture che hanno una sala senza attrezzature: ");
+					
+					Statement querysc2 = con.createStatement();
+					
+					ResultSet resultsc2 = querysc2.executeQuery("SELECT *"
+							+ "FROM struttura "
+							+ "WHERE PresenzaAttrezzatura='no'");	
+					
+					while(resultsc2.next()){
+						
+						String codiceStruttura = resultsc2.getString("CodiceStruttura");
+						
+						String nomeCentro= resultsc2.getString("NomeCentro");
+						
+						String tipo = resultsc2.getString("Tipo");
+						
+						String presenzaAttrezzatura = resultsc2.getString("PresenzaAttrezzatura");
+						
+			
+						System.out.println("Codice Struttura: "+codiceStruttura +"\nDenominazione Centro: "+nomeCentro+",\t Tipo: " +tipo+ ",\t Presenza Attrezzature: " +presenzaAttrezzatura+ "\n");
+			 
+					}
+					
+					System.out.println("Inserisci il codice struttura : ");
+					String codice=in.next();
+					
+					System.out.println("Inserisci il nome centro : ");
+					String nomecentro=in.next();
+					
+					Statement query1 = con.createStatement();
+					ResultSet result1 =query1.executeQuery("Select * from struttura "
+							+ "where CodiceStruttura ='"+codice+"'"
+							+ "and NomeCentro ='"+nomecentro+"' "
+							+ "and PresenzaAttrezzatura='no'");
+					
+					if(result1.next())System.out.println("La struttura esiste e la sala non presenta attrezzature!\n");
+					else throw new Exception("La struttura non esiste!\n");
+					
+					System.out.println("Inserisci la data : ");
+					String data=in.next();
+					
+					int orai;
+					while(true) {
+					
+						System.out.println("Inserisci l'ora (9 - 23): ");
+						orai=in.nextInt();
+					
+						if(9<=orai&&orai<=23)
+							break;
+						
+					}
+					String ora=""+orai+":00:00";
+					
+					int duratai;
+					while(true) {
+					
+						System.out.println("Dammi durata max ("+(24-orai)+"): ");
+						duratai=in.nextInt();
+						
+						if(duratai<=(24-orai))
+							break;
+					
+					}
+					
+					Statement query = con.createStatement();
+					ResultSet result =query.executeQuery("select * from prenotazione "
+							+ "where DataP ='"+data+"'"
+							+ "and CodiceStruttura ='"+codice+"'"
+							+ "and NomeCentro ='"+nomecentro+"'");   
+			        
+					while(result.next()) {
+						
+						Time orap = result.getTime("OraP");
+						int orain=orap.getHours();
+						
+						if(orai<=orain && orain<(orai+duratai))	throw new Exception("La struttura non puo essere prenotata!");
+						
+					}
+					String durata=""+duratai+"";
+			       
+					System.out.println("Inserisci la descrizione : ");
+					String descrizione=in.next();
+					
+					System.out.println("Inserisci il codice attività : ");
+					String attivita=in.next();
+					
+					Statement query2 = con.createStatement();
+					ResultSet result2=query2.executeQuery("select Istruttore from presiede "
+							+ "where CodiceAttivita ='"+attivita+"'");
+					
+					while(result2.next()) {
+						
+						String codicefiscale = result2.getString("Istruttore");
+						Statement query3 = con.createStatement();
+						ResultSet result3=query3.executeQuery("select CodiceAttivita from presiede "
+								+ "where Istruttore ='"+codicefiscale+"'");
+						
+						while(result3.next()) {
+							
+							String codicecontrollo = result3.getString("CodiceAttivita");
+							Statement query4 = con.createStatement();
+							ResultSet result4=query4.executeQuery("select * from prenotazione "
+									+ "where DataP ='"+data+"'"
+									+ "and OraP ='"+ora+"'"
+									+ "and CodiceAttivita ='"+codicecontrollo+"'");
+							if(result4.next())throw new Exception("Impossibile effettuare la prenotazione "
+									+ "dato che l'istruttore "+codicefiscale+" dell'attivita che si vuole "
+											+ "prenotare è già impegnato in data "+data+" in ora "+ora);
+						}
+							
+					}
+					
+					System.out.println("E' possibile effetture la prenotazione; \n"
+							+ "Elaborazione in corso..");
+					
+					String que="INSERT INTO prenotazione"
+							+ "(`DataP`, `OraP`, `Durata`, `Descrizione`, `Segretario`," + 
+							"`CodiceStruttura`, `NomeCentro`, `CodiceAttivita`)"
+							+ "VALUES(?,?,?,?,?,?,?,?)";
+				    PreparedStatement pstmt = con.prepareStatement(que,Statement.RETURN_GENERATED_KEYS); 
+				        
+				        pstmt.setString(1, data);
+				        pstmt.setString(2, ora);
+				        pstmt.setString(3, durata);
+				        pstmt.setString(4, descrizione);
+				        pstmt.setString(5, codfis);
+				        pstmt.setString(6, codice);
+				        pstmt.setString(7, nomecentro);
+				        pstmt.setString(8, attivita);
+				        int affectedRows = pstmt.executeUpdate();
+				        
+				        System.out.println("Prenotazione effettuata con successo!");
+				}
+				break;
+				
+			case 2:
+				
+				System.out.println("La struttura che vuoi prenotare deve avere un campo al chiuso?");
+			   	System.out.println("1)Si "
+			   				+ "\n2)No");
+			   	int sc2= in.nextInt();
+				
+				if(sc2==1) {
+					
+					/*
+					 * Controllo ed inserimento di strutture che hanno campi al chiuso
+					 */
+					
+					System.out.println("Strutture che hanno un campo al chiuso: ");
+					
+					Statement querysc3 = con.createStatement();
+					
+					ResultSet resultsc3 = querysc3.executeQuery("SELECT *"
+							+ "FROM struttura "
+							+ "WHERE TipologiaCampo='chiuso'");	
+					
+					while(resultsc3.next()){
+						
+						String codiceStruttura = resultsc3.getString("CodiceStruttura");
+						
+						String nomeCentro= resultsc3.getString("NomeCentro");
+						
+						String tipo = resultsc3.getString("Tipo");
+						
+						String tipologiaCampo = resultsc3.getString("TipologiaCampo");
+						
+			
+						System.out.println("Codice Struttura: "+codiceStruttura +"\nDenominazione Centro: "+nomeCentro+",\t Tipo: " +tipo+ ",\t Tipologia campo: " +tipologiaCampo+ "\n");
+			 
+					}
+					
+					System.out.println("Inserisci il codice struttura : ");
+					String codice=in.next();
+					
+					System.out.println("Inserisci il nome centro : ");
+					String nomecentro=in.next();
+					
+					Statement query1 = con.createStatement();
+					ResultSet result1 =query1.executeQuery("Select * from struttura "
+							+ "where CodiceStruttura ='"+codice+"' "
+							+ "and NomeCentro ='"+nomecentro+"' "
+							+ "and TipoCampo='chiuso'");
+					
+					if(result1.next())System.out.println("La struttura esiste ed il campo è al chiuso!\n");
+					else throw new Exception("La struttura non esiste!\n");
+					
+					System.out.println("Inserisci la data : ");
+					String data=in.next();
+					
+					int orai;
+					while(true) {
+					
+						System.out.println("Inserisci l'ora (9 - 23): ");
+						orai=in.nextInt();
+					
+						if(9<=orai&&orai<=23)
+							break;
+						
+					}
+					String ora=""+orai+":00:00";
+					
+					int duratai;
+					while(true) {
+					
+						System.out.println("Dammi durata max ("+(24-orai)+"): ");
+						duratai=in.nextInt();
+						
+						if(duratai<=(24-orai))
+							break;
+					
+					}
+					
+					Statement query = con.createStatement();
+					ResultSet result =query.executeQuery("select * from prenotazione "
+							+ "where DataP ='"+data+"'"
+							+ "and CodiceStruttura ='"+codice+"'"
+							+ "and NomeCentro ='"+nomecentro+"'");   
+			        
+					while(result.next()) {
+						
+						Time orap = result.getTime("OraP");
+						int orain=orap.getHours();
+						
+						if(orai<=orain && orain<(orai+duratai))	throw new Exception("La struttura non puo essere prenotata!");
+						
+					}
+					String durata=""+duratai+"";
+			       
+					System.out.println("Inserisci la descrizione : ");
+					String descrizione=in.next();
+					
+					System.out.println("Inserisci il codice attività : ");
+					String attivita=in.next();
+					
+					Statement query2 = con.createStatement();
+					ResultSet result2=query2.executeQuery("select Istruttore from presiede "
+							+ "where CodiceAttivita ='"+attivita+"'");
+					
+					while(result2.next()) {
+						
+						String codicefiscale = result2.getString("Istruttore");
+						Statement query3 = con.createStatement();
+						ResultSet result3=query3.executeQuery("select CodiceAttivita from presiede "
+								+ "where Istruttore ='"+codicefiscale+"'");
+						
+						while(result3.next()) {
+							
+							String codicecontrollo = result3.getString("CodiceAttivita");
+							Statement query4 = con.createStatement();
+							ResultSet result4=query4.executeQuery("select * from prenotazione "
+									+ "where DataP ='"+data+"'"
+									+ "and OraP ='"+ora+"'"
+									+ "and CodiceAttivita ='"+codicecontrollo+"'");
+							if(result4.next())throw new Exception("Impossibile effettuare la prenotazione "
+									+ "dato che l'istruttore "+codicefiscale+" dell'attivita che si vuole "
+											+ "prenotare è già impegnato in data "+data+" in ora "+ora);
+						}
+							
+					}
+					
+					System.out.println("E' possibile effetture la prenotazione; \n"
+							+ "Elaborazione in corso..");
+					
+					String que="INSERT INTO prenotazione"
+							+ "(`DataP`, `OraP`, `Durata`, `Descrizione`, `Segretario`," + 
+							"`CodiceStruttura`, `NomeCentro`, `CodiceAttivita`)"
+							+ "VALUES(?,?,?,?,?,?,?,?)";
+				    PreparedStatement pstmt = con.prepareStatement(que,Statement.RETURN_GENERATED_KEYS); 
+				        
+				        pstmt.setString(1, data);
+				        pstmt.setString(2, ora);
+				        pstmt.setString(3, durata);
+				        pstmt.setString(4, descrizione);
+				        pstmt.setString(5, codfis);
+				        pstmt.setString(6, codice);
+				        pstmt.setString(7, nomecentro);
+				        pstmt.setString(8, attivita);
+				        int affectedRows = pstmt.executeUpdate();
+				        
+				        System.out.println("Prenotazione effettuata con successo!");
+						
+				}
+				else if(sc2==2){
+					
+					/*
+					 * Controllo ed inserimento di strutture che hanno campi all'aperto
+					 */
+					
+					System.out.println("Strutture che hanno una campo all'aperto: ");
+					
+					Statement querysc4 = con.createStatement();
+					
+					ResultSet resultsc4 = querysc4.executeQuery("SELECT *"
+							+ "FROM struttura "
+							+ "WHERE TipologiaCampo='aperto'");	
+					
+					while(resultsc4.next()){
+						
+						String codiceStruttura = resultsc4.getString("CodiceStruttura");
+						
+						String nomeCentro= resultsc4.getString("NomeCentro");
+						
+						String tipo = resultsc4.getString("Tipo");
+						
+						String tipologiaCampo = resultsc4.getString("TipologiaCampo");
+						
+			
+						System.out.println("Codice Struttura: "+codiceStruttura +"\nDenominazione Centro: "+nomeCentro+",\t Tipo: " +tipo+ ",\t Tipologia campo: " +tipologiaCampo+ "\n");
+			 
+					}
+					
+					System.out.println("Inserisci il codice struttura : ");
+					String codice=in.next();
+					
+					System.out.println("Inserisci il nome centro : ");
+					String nomecentro=in.next();
+					
+					Statement query1 = con.createStatement();
+					ResultSet result1 =query1.executeQuery("Select * from struttura "
+							+ "where CodiceStruttura ='"+codice+"' "
+							+ "and NomeCentro ='"+nomecentro+"' "
+							+ "and TipoCampo='aperto'");
+					
+					if(result1.next())System.out.println("La struttura esiste ed il campo è all'aperto!\n");
+					else throw new Exception("La struttura non esiste!\n");
+					
+					System.out.println("Inserisci la data : ");
+					String data=in.next();
+					
+					int orai;
+					while(true) {
+					
+						System.out.println("Inserisci l'ora (9 - 23): ");
+						orai=in.nextInt();
+					
+						if(9<=orai&&orai<=23)
+							break;
+						
+					}
+					String ora=""+orai+":00:00";
+					
+					int duratai;
+					while(true) {
+					
+						System.out.println("Dammi durata max ("+(24-orai)+"): ");
+						duratai=in.nextInt();
+						
+						if(duratai<=(24-orai))
+							break;
+					
+					}
+					
+					Statement query = con.createStatement();
+					ResultSet result =query.executeQuery("select * from prenotazione "
+							+ "where DataP ='"+data+"'"
+							+ "and CodiceStruttura ='"+codice+"'"
+							+ "and NomeCentro ='"+nomecentro+"'");   
+			        
+					while(result.next()) {
+						
+						Time orap = result.getTime("OraP");
+						int orain=orap.getHours();
+						
+						if(orai<=orain && orain<(orai+duratai))	throw new Exception("La struttura non puo essere prenotata!");
+						
+					}
+					String durata=""+duratai+"";
+			       
+					System.out.println("Inserisci la descrizione : ");
+					String descrizione=in.next();
+					
+					System.out.println("Inserisci il codice attività : ");
+					String attivita=in.next();
+					
+					Statement query2 = con.createStatement();
+					ResultSet result2=query2.executeQuery("select Istruttore from presiede "
+							+ "where CodiceAttivita ='"+attivita+"'");
+					
+					while(result2.next()) {
+						
+						String codicefiscale = result2.getString("Istruttore");
+						Statement query3 = con.createStatement();
+						ResultSet result3=query3.executeQuery("select CodiceAttivita from presiede "
+								+ "where Istruttore ='"+codicefiscale+"'");
+						
+						while(result3.next()) {
+							
+							String codicecontrollo = result3.getString("CodiceAttivita");
+							Statement query4 = con.createStatement();
+							ResultSet result4=query4.executeQuery("select * from prenotazione "
+									+ "where DataP ='"+data+"'"
+									+ "and OraP ='"+ora+"'"
+									+ "and CodiceAttivita ='"+codicecontrollo+"'");
+							if(result4.next())throw new Exception("Impossibile effettuare la prenotazione "
+									+ "dato che l'istruttore "+codicefiscale+" dell'attivita che si vuole "
+											+ "prenotare è già impegnato in data "+data+" in ora "+ora);
+						}
+							
+					}
+					
+					System.out.println("E' possibile effetture la prenotazione; \n"
+							+ "Elaborazione in corso..");
+					
+					String que="INSERT INTO prenotazione"
+							+ "(`DataP`, `OraP`, `Durata`, `Descrizione`, `Segretario`," + 
+							"`CodiceStruttura`, `NomeCentro`, `CodiceAttivita`)"
+							+ "VALUES(?,?,?,?,?,?,?,?)";
+				    PreparedStatement pstmt = con.prepareStatement(que,Statement.RETURN_GENERATED_KEYS); 
+				        
+				        pstmt.setString(1, data);
+				        pstmt.setString(2, ora);
+				        pstmt.setString(3, durata);
+				        pstmt.setString(4, descrizione);
+				        pstmt.setString(5, codfis);
+				        pstmt.setString(6, codice);
+				        pstmt.setString(7, nomecentro);
+				        pstmt.setString(8, attivita);
+				        int affectedRows = pstmt.executeUpdate();
+				        
+				        System.out.println("Prenotazione effettuata con successo!");
+				}
+				break;
+				
+				default: System.out.println("Errore nella scelta!");
+			}
+			
+			
+		}
+			
+		catch (Exception e){
+			System.out.println(e);
+			System.out.println("Errore nell'interrogazione");
+		}
+	}

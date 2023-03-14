@@ -1,0 +1,19 @@
+-Regole di inferenza di armstrong
+-Push Selection
+-Dipendenza funzionale (Normalizzazione)
+-Transazioni in sql(Con esempi)
+-Controllo degli accessi
+-Differenza tra btree e btree+ con ogni livello
+-Entità deboli
+-Gerarchie e come si indicano nel mapping
+-Indice sparso e denso
+-Indici multilivello
+-Tipologie di query 
+-Cluster indice sparso
+-Attributo multivalore
+-Intersezione con operatori minimali in algebra relazionale
+-Seconda forma normale generalizzata differenza con 2FN con esempio
+generalizzato
+matricola, nome, cognome, dataNascita, età
+-Terza forma normale generalizzata differenza con 3FN
+-Funzioni di aggregamento in sql

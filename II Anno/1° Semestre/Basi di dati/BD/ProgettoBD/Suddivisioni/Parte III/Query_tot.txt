@@ -1,0 +1,51 @@
+Query 1:
+INSERT INTO prenotazione 
+VALUES('', '2020-01-01', '10:00:00', '50', 'prenotazione effettuata', 'SPSVCN00E04C129S', 1, 1);
+
+Query 2:
+SELECT * 
+FROM prenotazione
+
+Query 3:
+SELECT OraP, DataP, NomeCentro
+FROM prenotazione
+WHERE DataP='' AND NomeCentro=''
+GROUP BY OraP, DataP;
+
+Query 4:
+SELECT DataP, OraP, NomeCentro
+FROM prenotazione
+WHERE OraP='' AND NomeCentro=''
+GROUP BY DataP, OraP;
+
+Query 6:
+SELECT attivita.Denominazione, SUM(attivita.Durata)AS DurataTotale
+FROM attivita NATURAL JOIN svolgimento
+WHERE DataS BETWEEN '2019-01-01' AND '2019-12-31'
+GROUP BY Denominazione;
+
+Query 8:
+INSERT INTO istruttore 
+VALUES('FFSSML00S45C188S', 'Fiorinda', 'Smaldone', '3315897456', 'Tempo Indeterminato', '2', 'Nuoto', '');
+
+Query 9:
+SELECT NomeCentro, CodiceStruttura
+FROM (	SELECT NomeCentro, CodiceStruttura, COUNT(CodiceAttivita) AS NTot
+	FROM svolgimento
+	GROUP BY NomeCentro, CodiceStruttura ) AS NumeroTot
+WHERE NTot IN (	SELECT MAX(NTot)
+		FROM (	SELECT NomeCentro, CodiceStruttura, COUNT(CodiceAttivita) AS NTot
+			FROM svolgimento
+			GROUP BY NomeCentro, CodiceStruttura ) AS NumeroTot2);
+
+Query14:
+SELECT CodiceStruttura, AreaOccupata, NomeCentro, 360-COUNT(DISTINCT DataP) AS GiorniLiberi
+FROM struttura NATURAL JOIN Prenotazione
+WHERE DataP BETWEEN '2019-01-01' AND '2019-12-31'
+GROUP BY CodiceStruttura, NomeCentro
+
+Query15:
+SELECT CodiceStruttura, AreaOccupata, NomeCentro, SUM(Durata) AS OreOccupate
+FROM struttura NATURAL JOIN prenotazione
+WHERE DataP BETWEEN '2019-01-01' AND '2021-12-31'
+GROUP BY CodiceStruttura, NomeCentro
