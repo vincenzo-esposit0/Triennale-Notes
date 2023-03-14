@@ -1,0 +1,62 @@
+package main_package;
+
+import java.util.Random;
+
+public class Ambata {
+	//Costruttore
+	public Ambata(String nome,String cognome, double saldo) {
+		this.nome=nome;
+		this.cognome=cognome;
+		this.saldo=saldo;
+		numeri= new int[10];
+		rand=new Random();
+	}
+	
+	//Metodo gioca
+	public boolean gioca() {
+		for(int i=0;i<10;i++) {
+			int newn=rand.nextInt(45);
+			if(i==0)
+				numeri[i]=newn;
+			for(int j=0;j<i;j++)
+				if (newn==numeri[j])
+						i--;
+				else
+					numeri[i]=newn;
+		}
+		
+		for(int i=0;i<10;i++) {
+			if(numeri[i]==nplay) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	//Calcola vincita
+	public double calcolaVincità() {
+		return puntata*10;
+	}
+	
+	//Metodi get
+	public String getNome() { return nome;}
+	public String getCognome() { return cognome;}
+	public double getSaldo() { return saldo;}
+	public int getNplay() { return nplay;}
+	public double getPuntata() { return puntata;}
+	public String getNumero(int i) { return numeri[i]+" ";}
+	
+	//Metodi set
+	public void setSaldo(double d) { saldo=d;}
+	public void setPutanta(double x) { puntata=x;}
+	public void setNplay(int x) { nplay=x;}
+	
+	//Atributi
+	private String nome;
+	private String cognome;
+	private int nplay;
+	private double puntata;
+	private double saldo;
+	private int[] numeri;
+	private Random rand;
+}

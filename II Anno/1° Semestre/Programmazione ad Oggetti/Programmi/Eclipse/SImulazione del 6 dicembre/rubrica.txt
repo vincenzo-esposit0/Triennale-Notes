@@ -1,0 +1,35 @@
+Peppino
+Polese
+Informatica
+Basi di dati, IA
+082356987456
+Carmine
+Gravino
+Informatica
+Programmazione Object Orientied, Ingegneria del software
+082365498752
+Bruno
+Carpentieri
+Informatica
+Sistemi operativi, Sistemi operativi avanzati
+08235632145
+Barbara
+Masucci
+Informatica
+Architettura degli elaboratori
+08235698632
+Benedetto
+Elmo
+Informatica
+Analisi Matematica 1
+08235698569
+Maurizio
+Tucci
+Informatica
+Programmazione 1, Programmazione e strutture dati
+082356985693
+Margherita
+Napoli
+Informatica
+Metodi Matematici per informatica
+082356985236

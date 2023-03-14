@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="Main_package.Quadrato"/>
+<fullyQualifiedTypeName name="main_package.Distributore"/>
+<fullyQualifiedTypeName name="main_package.Studente"/>
+<fullyQualifiedTypeName name="Main_package.InputChecker"/>
+<fullyQualifiedTypeName name="main_package.Month"/>
+<fullyQualifiedTypeName name="main_package.Serratura"/>
+<fullyQualifiedTypeName name="main_package.Password"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="main_package.Libro"/>
+<fullyQualifiedTypeName name="main_package.Libreria"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="main_package.BankAccount"/>
+<fullyQualifiedTypeName name="main_package.Treno"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="it.unisa.prog2.money.Coin"/>
+<fullyQualifiedTypeName name="default_package.MoneyTest"/>
+<fullyQualifiedTypeName name="money.ContoCorrente"/>
+<fullyQualifiedTypeName name="main_package.DataSet"/>
+<fullyQualifiedTypeName name="main_package.Quiz"/>
+</qualifiedTypeNameHistroy>

@@ -1,0 +1,107 @@
+public class CercaTecniciFrame extends JFrame{
+	
+	public CercaTecniciFrame(PortaleIdraulici portale,String...marche)
+	{
+		super("Idraulici");
+		this.portale=portale;
+		this.marche=new JComboBox(marche);
+		
+		//Setto il frame
+		super.setBounds(100,100,500,500);
+		super.setVisible(true);
+		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		super.setLayout(new FlowLayout());
+		
+		//Creo i JPanel per i componenti ed aggiungo i componenti
+		JPanel contentMarche=new JPanel();
+		contentMarche.add(this.marche);
+		JPanel contentCerca=new JPanel();
+		cerca=new JButton("Cerca");
+		contentCerca.add(cerca);
+		
+		//Aggiungi i JPanel al frame
+		super.add(contentMarche);
+		super.add(contentCerca);
+		
+		//Aggiungo i listener
+		Premuto premuto=new Premuto(this,this.cerca,this.marche);
+		cerca.addActionListener(premuto);
+		this.marche.addActionListener(premuto);
+		
+		//Aggiorno il frame nel caso in cui possa dare errore
+		revalidate();
+		
+	}
+	
+	public class Premuto implements ActionListener{
+
+		public Premuto(CercaTecniciFrame frame,JButton jbutton,JComboBox jcombo)
+		{
+			this.frame=frame;
+			this.jbutton=jbutton;
+			this.jcombo=jcombo;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if(jcombo==e.getSource())
+				marcaSelezionata=(String) jcombo.getSelectedItem();
+			if(jbutton==e.getSource()&&marcaSelezionata!=null)
+			{
+				frame.setVisible(false);
+				ElencoTecniciFrame elencoFrame=new ElencoTecniciFrame(portale,marcaSelezionata);
+			}
+			else if(!jcombo.isFocusOwner())
+				JOptionPane.showMessageDialog(null,"Seleziona una marca!");
+				
+		}
+		
+		private JFrame frame;
+		private JComboBox jcombo;
+		private JButton jbutton;
+		private String marcaSelezionata;
+		
+	}
+	
+	public static void main(String[] arg){
+		
+		//Creo le marche per l'idraulico1
+		ArrayList<String> marcheTecnico1=new ArrayList<String>();
+		marcheTecnico1.add("Ferroli");
+		marcheTecnico1.add("Bosh");
+				
+		//Creo le marche per l'idraulico2
+		ArrayList<String> marcheTecnico2=new ArrayList<String>();
+		marcheTecnico2.add("Ferroli");
+		marcheTecnico2.add("Bosh");
+		marcheTecnico2.add("Vaillant");
+		marcheTecnico2.add("Junkers");
+				
+		//Creo i tecnici
+		TecnicoCaldaia tc1=new TecnicoCaldaia("001","Mario","Rossi",marcheTecnico1);
+		TecnicoCaldaia tc2=new TecnicoCaldaia("002","Gianfranco","Giliberti",marcheTecnico2);
+		TecnicoCaldaia tc3=new TecnicoCaldaia("003","Gian","Filiberto",marcheTecnico2);
+				
+		//Creo il portale
+		PortaleIdraulici portale=new PortaleIdraulici();
+		portale.aggiungiIdraulico(tc1);
+		portale.aggiungiIdraulico(tc2);
+		portale.aggiungiIdraulico(tc3);
+		
+		//Effettuo già qualche per far vedere l'ordinamento nel secondo frame
+		try {
+			portale.effettuaIntervento("001","Tipo","Ferroli",1);
+			portale.effettuaIntervento("002","Tipo","Ferroli",4);
+			portale.effettuaIntervento("003","Tipo","Ferroli",5);
+		} catch (TecnicoNonAbilitatoException e) {
+		}
+		
+		//Creo il frame
+		CercaTecniciFrame idraulici=new CercaTecniciFrame(portale,"Ferroli","Bosh","Vaillant","Junkers");
+	}
+	
+	private PortaleIdraulici portale;
+	private JComboBox marche;
+	private JButton cerca;
+
+}

@@ -1,0 +1,14 @@
+package main_package;
+import java.util.*;
+
+public class Main {
+	public static void main (String[] args) {
+		Scanner input=new Scanner(System.in);
+		String str;
+		System.out.println("Dammi la stringa");
+		str=input.nextLine();
+		int n=str.length();
+		n=n/2;
+		System.out.println("La stringa inserita è: "+str.substring(n,n+1));
+	}
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;DataSet.java&apos; to &apos;Secondo esercizio interfacce/src/main_package&apos;&#x0D;&#x0A;- Original project: &apos;Primo esercizio interfacce&apos;&#x0D;&#x0A;- Destination element: &apos;Secondo esercizio interfacce/src/main_package&apos;&#x0D;&#x0A;- Original element: &apos;main_package.DataSet.java&apos;" description="Copy compilation unit" destination="=Secondo esercizio interfacce/src&lt;main_package" element1="/src&lt;main_package{DataSet.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1540276227567" units="1" version="1.0"/>
+</session>

@@ -1,0 +1,27 @@
+package main_package;
+import java.util.*;
+
+public class Main {
+	public static void main (String args[]) {
+		Scanner input=new Scanner(System.in);
+		String str;
+		System.out.println("Dammi la stringa:");
+		str=input.nextLine();
+		int n=str.length()/2;
+		System.out.println("La stringa inserita è: "+str.substring(n,n+1));
+		String str2;	
+		do {
+			System.out.println("Dammi la stringa seconda perchè siamo pigri:");
+			str2=input.nextLine();
+		}while(str2.length()<2);
+		String str3=str2.substring(str2.length()-1).concat(str2.substring(1,str2.length()-1).concat(str2.substring(0,1))); /*cristian camillo code*/
+		System.out.println("La seconda stringa finale è: "+str3);
+		String str3;	
+		do {
+			System.out.println("Dammi la stringa seconda perchè siamo veramente pigri:");
+			str3=input.nextLine();
+		}while(str3.length()<2);
+		String str4=str3.substring((str3.length()/2)+1).concat(str3.substring(0,str.length()/2));
+		System.out.println("La seconda stringa finale è: "+str4);
+	}
+}

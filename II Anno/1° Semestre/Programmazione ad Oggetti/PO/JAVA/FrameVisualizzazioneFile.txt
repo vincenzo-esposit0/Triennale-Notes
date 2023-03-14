@@ -1,0 +1,163 @@
+public class FrameVisualizzazione extends JFrame{
+	public FrameVisualizzazione(String nomeFile) throws FileNotFoundException, ClassNotFoundException, IOException {
+		super("Menù principale");
+		this.nomeFile=nomeFile;
+		prendiDaFile();
+		
+		super.setBounds(100, 100, 500, 500);
+		super.setVisible(true);
+		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JPanel contenitore = new JPanel();
+		contenitore.setLayout(new BorderLayout());
+		super.add(contenitore);
+		
+		/**
+		 * Aggiungo al pannello nord due pannelli nei quali ci saranno due bottoni che serviranno per la ricerca degli studenti e dei professionisti
+		 */
+		JPanel nord = new JPanel();
+		nord.setLayout(new GridLayout(1, 2));
+		contenitore.add(nord, BorderLayout.NORTH);
+		
+		JPanel pannello1 = new JPanel();
+		pannello1.add(visualizzaStudenti);
+		nord.add(pannello1);
+	
+		
+		JPanel pannello2 = new JPanel();
+		pannello2.add(visualizzaProfessionisti);
+		nord.add(pannello2);
+		
+		/**
+		 * Aggiungo al pannello centro una JTextArea senza nessun pannello contenitore
+		 */
+		JPanel centro = new JPanel();
+		centro.setLayout(new GridLayout(1,1));
+		centro.add(areaRisultati);
+		contenitore.add(centro, BorderLayout.CENTER);
+		
+		/**
+		 * Aggiungo al pannello sud un layout a griglia
+		 */
+		JPanel sud = new JPanel();
+		sud.setLayout(new GridLayout(1, 3));
+		contenitore.add(sud, BorderLayout.SOUTH);
+		
+		JPanel pannello01 = new JPanel();
+		JLabel totaleIncasso=new JLabel("Totale incasso:");
+		pannello01.add(totaleIncasso);
+		//pannello01.add(new JTextArea());
+		sud.add(pannello01);
+		
+		JPanel pannello02 = new JPanel();
+		JLabel totaleIncassoPerTipo=new JLabel("Totale incasso:");
+		pannello02.add(totaleIncassoPerTipo);
+		//pannello01.add(new JTextArea());
+		sud.add(pannello02);
+		
+		JPanel pannello03 = new JPanel();
+		pannello03.add(ricercaData);
+		//pannello01.add(new JTextArea());
+		sud.add(pannello03);
+		
+		Premuto p=new Premuto(this,visualizzaStudenti,visualizzaProfessionisti,areaRisultati,totaleIncasso,totaleIncassoPerTipo);
+		visualizzaStudenti.addActionListener(p);
+		visualizzaProfessionisti.addActionListener(p);
+		ricercaData.addActionListener(p);
+		
+		
+		
+	}
+	
+	private void prendiDaFile() throws FileNotFoundException, IOException, ClassNotFoundException
+	{
+		registrazioni=new Registrazioni();
+		
+		ObjectInputStream fileDeserializzazione = new ObjectInputStream(new FileInputStream(nomeFile));
+		
+		try
+        {
+        	while(fileDeserializzazione.read()!=0) //Oppure fin!=null
+        	{	
+            	Registrazione x = (Registrazione) fileDeserializzazione.readObject();
+            	registrazioni.aggiungiRegistrazione(x);
+            }
+        	
+        }catch(EOFException e) //Gestire l'eccezione di terminazione del file
+        {
+        }
+		
+	}
+	
+	public class Premuto implements ActionListener
+	{
+
+		public Premuto(FrameVisualizzazione frame,JButton studente,JButton professionista,JTextArea a,JLabel totale,JLabel totTipo)
+		{
+			this.frame=frame;
+			this.studente=studente;
+			this.professionista=professionista;
+			this.a=a;
+			this.totale=totale;
+			this.totTipo=totTipo;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(studente==e.getSource())
+			{
+				a.setText("");
+				totale.setText("");
+				totTipo.setText("");
+				double dammiTot=registrazioni.dammiTotale();
+				double dammiTotTipo=registrazioni.dammiTotalePerTipoRegistrazione(0);
+				for(Registrazione r:registrazioni.dammiRegistrazionePerTipoPartecipante(0))
+					a.append(r.toString());
+				
+				totale.setText("Totale incasso: "+dammiTot);
+				totTipo.setText("Totale incasso studenti: "+dammiTotTipo);
+			}
+			
+			if(professionista==e.getSource())
+			{
+				a.setText("");
+				totale.setText("");
+				totTipo.setText("");
+				double dammiTot=registrazioni.dammiTotale();
+				double dammiTotTipo=registrazioni.dammiTotalePerTipoRegistrazione(1);
+				for(Registrazione r:registrazioni.dammiRegistrazionePerTipoPartecipante(1))
+					a.append(r.toString());
+				
+				totale.setText("Totale incasso: "+dammiTot);
+				totTipo.setText("Totale incasso studenti: "+dammiTotTipo);
+			}
+			
+			if(ricercaData==e.getSource())
+			{
+				frame.setVisible(false);
+				FrameRicerca fr=new FrameRicerca(registrazioni);
+			}
+			
+		}
+		
+		private JButton studente;
+		private JButton professionista;
+		private JTextArea a;
+		
+		private JLabel totale;
+		private JLabel totTipo;
+		private FrameVisualizzazione frame;
+		
+	}
+	
+	private JButton visualizzaStudenti = new JButton("Visualizza Studenti");
+	private JButton visualizzaProfessionisti = new JButton("Visualizza Professionisti");
+	private JButton ricercaData = new JButton("Ricerca");
+	
+	private JTextArea areaRisultati = new JTextArea();
+	
+	private Registrazioni registrazioni;
+	private String nomeFile;
+	
+	
+
+}

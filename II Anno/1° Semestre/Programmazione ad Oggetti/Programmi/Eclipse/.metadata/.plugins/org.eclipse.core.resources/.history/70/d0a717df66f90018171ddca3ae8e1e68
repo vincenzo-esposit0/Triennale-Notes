@@ -1,0 +1,52 @@
+import java.awt.GridLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+public class Main {
+	public static void main(String[] args) {
+		createFrame();
+		createPanel();
+		frame.add(panel);
+	}
+	//Crea il frame
+	public static void createFrame() {
+		frame=new JFrame();
+		frame.setVisible(true);
+		frame.setSize(500, 500);
+		frame.setTitle("Simulazione prova parte due");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
+	}
+	//Crea il panel
+	public static void createPanel() {
+		panel=new JPanel();
+		panel.setLayout(new GridLayout(3,1));
+		
+		JPanel p1=new JPanel();
+		p1.add(new JLabel("Nome"));
+		p1.add(new JLabel("Cognome"));
+		p1.add(new JLabel("Struttura"));
+		p1.add(new JLabel(""));
+		
+		JPanel p2=new JPanel();
+		jtl1=new JTextField(10);
+		p2.add(jtl1);
+		jtl2=new JTextField(10);
+		p2.add(jtl2);
+		jtl3=new JTextField(10);
+		p2.add(jtl3);
+		
+		JPanel p3=new JPanel();
+		
+	}
+	//Attributi
+	private static JFrame frame;
+	private static JPanel panel;
+	private static JTextField jtl1;
+	private static JTextField jtl2;
+	private static JTextField jtl3;
+	
+
+}

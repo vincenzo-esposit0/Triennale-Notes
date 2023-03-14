@@ -1,0 +1,20 @@
+package main_package;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Main {
+	public static void main(String[] args) {
+		Color magenta =new Color(1.0F,0.0F,1.0F);
+		CerchioComponent cerchio1=new CerchioComponent(0,0,200,Color.BLUE);
+		CerchioComponent cerchio2=new CerchioComponent(0,200,200,magenta);
+		JFrame finestra=new JFrame();
+		JPanel panel= new JPanel();
+		finestra.setSize(500,500);
+		finestra.setTitle("Due cerchi colorati");
+		finestra.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		panel.add(cerchio1);
+		panel.add(cerchio2);
+		finestra.setVisible(true);
+	}
+}

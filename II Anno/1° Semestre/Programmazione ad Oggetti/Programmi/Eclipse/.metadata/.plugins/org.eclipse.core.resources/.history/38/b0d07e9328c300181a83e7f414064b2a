@@ -1,0 +1,15 @@
+package Main_package;
+
+import java.util.*;
+
+public class main {
+
+	public static void main(String[] args) {
+		System.out.println("Immetti un intero ");
+		Scanner input = new Scanner(System.in);
+		int x = input.nextInt();
+		System.out.println("Ho letto: " + x);
+
+	}
+
+}

@@ -1,0 +1,35 @@
+package main_package;
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) {
+		Scanner console=new Scanner(System.in);
+		System.out.println("Dammi il nome del file: ");
+		String str=console.nextLine();
+		System.out.println("Dammi la parola chiave: ");
+		String kstr=console.nextLine();
+		File file=new File(str);
+		try {
+			Scanner fin=new Scanner(file);
+			while (fin.hasNext()) {
+				String line=fin.nextLine();
+				int i=0,j=0;
+				while(i<line.length()) {
+					while(line.charAt(i)!=' ') { 
+						System.out.println("proca");
+						i++; 
+					}
+					if (line.substring(j,i).compareTo(kstr)==0)
+						System.out.println(line);
+					j=i;
+				}
+			}
+		}catch (IOException exception) {
+			System.out.println("Errore nell'apertura del file...");
+		}
+		
+	}
+
+}

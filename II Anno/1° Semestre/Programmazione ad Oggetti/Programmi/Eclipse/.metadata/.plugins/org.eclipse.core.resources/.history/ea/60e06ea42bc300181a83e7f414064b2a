@@ -1,0 +1,16 @@
+package Main_package;
+
+import java.util.*;
+import javax.swing.*;
+import Main_package.Quadrato;
+
+public class main {
+
+	public static void main(String[] args) {
+		String input = JOptionPane.showInputDialog("Dammi il lato del quadrato");
+		Quadrato qua= new Quadrato(Integer.parseInt(input));
+		System.out.println("Il lato del quadrato creato è: " + qua.lato);
+		System.out.println("Il perimetro del quadrato è: " + qua.calcPerimetro());
+		System.exit(0);
+	}
+}

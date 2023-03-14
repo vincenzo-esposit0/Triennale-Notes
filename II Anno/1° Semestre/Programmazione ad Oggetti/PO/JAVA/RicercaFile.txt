@@ -1,0 +1,40 @@
+public class Premuto implements ActionListener{
+
+		public Premuto(FrameCaricamentoFile frame,JTextField testoFile, JButton bottoneFile)
+		{
+			this.frame=frame;
+			this.testoFile=testoFile;
+			this.bottoneFile=bottoneFile;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(bottoneFile==e.getSource())
+			{
+				nomeFile=testoFile.getText();
+				if(nomeFile==null)
+				JOptionPane.showMessageDialog(null,"Insert nome dei file!");
+				System.out.println(nomeFile);
+				File f=new File(nomeFile);
+				
+				if(!f.exists())
+				JOptionPane.showMessageDialog(null,"Insert nome esistente!");
+				else
+				{
+					frame.setVisible(false);
+					try {
+						FrameVisualizzazione fv=new FrameVisualizzazione(nomeFile);
+					} catch (ClassNotFoundException | IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+			
+		}
+		
+		private FrameCaricamentoFile frame;
+		private JTextField testoFile;
+		private JButton bottoneFile;
+		private String nomeFile;  
+		
+	}

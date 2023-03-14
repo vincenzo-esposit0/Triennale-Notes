@@ -1,0 +1,15 @@
+package main_package;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Main {
+	public static void main(String[] args) {
+		JFrame finestra=new JFrame();
+		finestra.setSize(500,500);
+		finestra.setTitle("Due cerchi colorati");
+		finestra.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		finestra.setVisible(true);
+	}
+
+}

@@ -1,0 +1,12 @@
+public class azione implemnets ActionListener{
+JLabel d1= new jLabel();
+
+public azione(JLabel d1){
+this.d1=d1;
+
+public ActionPerformed(){
+d1.setText("ciao");
+}
+
+b.addActionListener(new azione(d));
+}

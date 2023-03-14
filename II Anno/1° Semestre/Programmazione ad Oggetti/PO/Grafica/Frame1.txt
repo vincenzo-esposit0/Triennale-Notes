@@ -1,0 +1,186 @@
+public class Frame extends JFrame {
+	public Frame() {
+		super("Frame Grafico");
+
+		super.setBounds(100, 100, 1000, 500);
+		super.setVisible(true);
+		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//Aggiungo un JPanel che conterrà tutto
+		JPanel contenitore = new JPanel();
+		super.setContentPane(contenitore);
+		contenitore.setLayout(new BorderLayout());
+
+		contenitore.add(west, BorderLayout.WEST);
+
+		contenitore.add(center, BorderLayout.CENTER);
+		center.setLayout(new GridLayout(0, 3, 0, 0));
+
+		JPanel panel = new JPanel();
+		center.add(panel);
+		panel.setLayout(null);
+
+		JTextArea txtrDddd = new JTextArea();
+		txtrDddd.setBounds(10, 0, 246, 461);
+		panel.add(txtrDddd);
+
+		JPanel panel_1 = new JPanel();
+		center.add(panel_1);
+		panel_1.setLayout(null);
+
+		JTextArea textArea_1 = new JTextArea();
+		textArea_1.setBounds(10, 0, 246, 461);
+		panel_1.add(textArea_1);
+
+		JPanel panel_2 = new JPanel();
+		center.add(panel_2);
+		panel_2.setLayout(null);
+
+		JTextArea textArea_2 = new JTextArea();
+		textArea_2.setBounds(10, 0, 246, 461);
+		panel_2.add(textArea_2);
+
+		// Setto il layout a griglia nella parte west ed aggiungo i pannelli
+		west.setLayout(new GridLayout(6, 1, 0, 0));
+
+		JPanel pannello1 = new JPanel();
+		pannello1.setLayout(null);
+		JLabel label = new JLabel("Username", JLabel.CENTER);
+		label.setBounds(17, 8, 49, 14);
+		pannello1.add(label);
+		username.setBounds(17, 26, 96, 20);
+		pannello1.add(username);
+		west.add(pannello1);
+		username.setColumns(10);
+
+		JPanel pannello2 = new JPanel();
+		pannello2.setLayout(null);
+		JLabel label_1 = new JLabel("Password", JLabel.CENTER);
+		label_1.setBounds(19, 8, 46, 14);
+		pannello2.add(label_1);
+		psw.setBounds(19, 33, 96, 20);
+		pannello2.add(psw);
+		west.add(pannello2);
+		psw.setColumns(10);
+
+		JPanel pannello3 = new JPanel();
+		pannello3.setLayout(null);
+		JLabel label_2 = new JLabel("E-mail", JLabel.CENTER);
+		label_2.setBounds(26, 11, 31, 14);
+		pannello3.add(label_2);
+		email.setBounds(26, 32, 96, 20);
+		pannello3.add(email);
+		west.add(pannello3);
+		email.setColumns(10);
+
+		JPanel pannello4 = new JPanel();
+		pannello4.add(new JLabel("Numero Utente", JLabel.CENTER));
+		pannello4.add(nUtente);
+		west.add(pannello4);
+		nUtente.setColumns(10);
+
+		JPanel pannello5 = new JPanel();
+		pannello5.setLayout(null);
+		randomUser.setBounds(42, 24, 97, 23);
+		pannello5.add(randomUser);
+		west.add(pannello5);
+
+		JPanel pannello6 = new JPanel();
+		pannello6.setLayout(null);
+		register.setBounds(58, 25, 73, 23);
+		pannello6.add(register);
+		west.add(pannello6);
+
+		// Sto rendendo il JTextField inutilizzabile dall'utente datoc he è un valore
+		// che va incrementato da solo
+		nUtente.setEnabled(false);
+		nUtente.setEditable(false);
+		
+		register.addActionListener(new TastoPremuto(register, randomUser, username, psw, email, nUtente, txtrDddd, textArea_1, textArea_2));
+		randomUser.addActionListener(new TastoPremuto(register, randomUser, username, psw, email, nUtente, txtrDddd, textArea_1, textArea_2));
+
+	}
+
+	public class TastoPremuto implements ActionListener {
+
+		private JTextField username;
+		private JTextField psw;
+		private JTextField email;
+		private JTextField nUtente;
+		private JTextArea txtrDddd;
+		private JTextArea textArea_1;
+		private JTextArea textArea_2;
+		private int generetor = 0;
+
+		String user, password, emailUser;
+
+		public TastoPremuto(JButton register, JButton randomUser, JTextField username, JTextField psw, JTextField email,
+				JTextField nUtente, JTextArea txtrDddd, JTextArea textArea_1, JTextArea textArea_2) {
+			this.username = username;
+			this.psw = psw;
+			this.email = email;
+			this.nUtente = nUtente;
+			this.txtrDddd = txtrDddd;
+			this.textArea_1 = textArea_1;
+			this.textArea_2 = textArea_2;
+
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			/**
+			 * Controllo se sono stati inseriti valori all'interno delle JTextField
+			 */
+			if (username == e.getSource())
+				user = this.username.getText();
+			if (psw == e.getSource())
+				password = this.psw.getText();
+			if (email == e.getSource())
+				emailUser = this.email.getText();
+
+			/**
+			 * Controllo quale tasto è stato premuto, cioè ho aggiunto un listener che mi
+			 * verifica quale dei due è stato premuto
+			 */
+			if (register == e.getSource() && user != null && password != null && emailUser != null) {
+
+				generetor++;
+
+				this.txtrDddd.append(user + "\n");
+				this.textArea_1.append(password + "\n");
+				this.textArea_2.append(emailUser + "\n");
+				this.nUtente.setText(Integer.toString(generetor));
+			} else if (randomUser == e.getSource() && user != null && password != null && emailUser != null) {
+
+				Random r = new Random();
+				int x = r.nextInt(100);
+				generetor += x;
+
+				for (int i = 0; i < x; i++) {
+					this.txtrDddd.append(user + "\n");
+					this.textArea_1.append(password + "\n");
+					this.textArea_2.append(emailUser + "\n");
+					this.nUtente.setText(Integer.toString(generetor));
+				}
+			} else
+				JOptionPane.showMessageDialog(null, "Compila tutti i campi!");
+		}
+
+	}
+
+	public static void main(String[] args) {
+		Frame F = new Frame();
+
+	}
+
+	private JPanel west = new JPanel();
+	private JPanel center = new JPanel();
+
+	private JTextField username = new JTextField();
+	private JTextField psw = new JTextField();
+	private JTextField email = new JTextField();
+	private JTextField nUtente = new JTextField();
+
+	private JButton randomUser = new JButton("Random User");
+	private JButton register = new JButton("Registra");
+}

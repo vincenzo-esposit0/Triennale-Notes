@@ -1,0 +1,27 @@
+package gioco;
+
+public class CartaAlta{
+	//Costruttore
+	public CartaAlta(double vbiglietto,int carte[]) {
+		this.vbiglietto=vbiglietto;
+		this.carte=carte;
+	}
+	//Metodo gioca
+	public boolean gioca() {
+		if ((carte[2]>carte[0])&&(carte[3]>carte[1]))
+			return true;
+		else
+			return false;
+	}
+	//Metodo dammiVincità
+	public double dammiVincita() {
+		return vbiglietto*5;
+	}
+	//Metodo toString
+	public String toString() {
+		return vbiglietto+" "+carte[0]+" "+carte[1]+" "+carte[2]+" "+carte[3];
+	}
+	//Attributi
+	private int carte[];
+	private double vbiglietto;
+}

@@ -1,0 +1,16 @@
+package main_package;
+
+import javax.swing.*;
+
+public class Main {
+	public static void main(String[] args) {
+		CerchioComponent cerchio=new CerchioComponent();
+		JFrame finestra=new JFrame();
+		finestra.setSize(500,500);
+		finestra.setTitle("Due cerchi colorati");
+		finestra.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		finestra.add(cerchio);
+		finestra.setVisible(true);
+	}
+
+}

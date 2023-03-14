@@ -1,0 +1,14 @@
+package main_package;
+
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+
+import javax.swing.*;
+
+public class CerchioComponent extends JComponent{
+	public void paintComponent(Graphics g) {
+		Graphics2D g2 =(Graphics2D) g;
+		Ellipse2D.Double ellisse=new Ellipse2D.Double(50,50,100,100);
+		g2.draw(ellisse);
+	}
+}

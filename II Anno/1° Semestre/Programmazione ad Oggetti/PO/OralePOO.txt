@@ -1,0 +1,5 @@
+Orale POO:
+
+-A cosa servono le schede CRC/ I class diagram?
+-Cosa sono le classi interne e anonime; differenze tra le due?
+-Gestione delle eccezioni?

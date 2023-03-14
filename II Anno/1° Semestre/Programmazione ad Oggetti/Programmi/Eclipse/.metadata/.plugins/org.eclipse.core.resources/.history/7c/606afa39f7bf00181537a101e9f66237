@@ -1,0 +1,12 @@
+package main_package;
+import java.util.Scanner;
+
+public class Main {
+	public static void main (String[] args) {
+		Scanner s=new Scanner(System.in);
+		String str;
+		System.out.println("Dammi la stringa");
+		s.next(str);
+		System.out.println("La parola letta è:"+str );
+	}
+}

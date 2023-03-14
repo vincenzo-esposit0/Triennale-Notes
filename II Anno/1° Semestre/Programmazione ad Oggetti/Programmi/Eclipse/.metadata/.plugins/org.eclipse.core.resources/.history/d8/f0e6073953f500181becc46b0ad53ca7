@@ -1,0 +1,20 @@
+package main_package;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Main {
+	public static void main(String[] args) {
+		JFrame frame=new JFrame();
+		JButton bottone=new JButton("Cliccami tutto");
+		frame.add(bottone);
+		
+		ClickListener listener=new ClickListener();
+		bottone.addActionListener(listener);
+		
+		frame.setSize(500,500);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+
+}

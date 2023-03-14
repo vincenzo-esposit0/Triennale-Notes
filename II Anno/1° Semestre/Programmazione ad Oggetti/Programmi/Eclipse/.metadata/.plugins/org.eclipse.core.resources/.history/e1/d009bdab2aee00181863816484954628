@@ -1,0 +1,12 @@
+package main_package;
+
+import java.io.IOException;
+import java.util.*;
+
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+			BankAccount ba=new BankAccount("Sonno",10);
+	}
+
+}

@@ -1,0 +1,15 @@
+package main_package;
+
+import java.util.*;
+
+
+public class Main {
+	public static void main(String[] args) {
+		try {
+			BankAccount ba=new BankAccount("erica",-1);
+		}catch (IllegalArgumentException exception) {
+			System.out.println("Ciao a tutti l'ho beccata");
+		}
+	}
+
+}

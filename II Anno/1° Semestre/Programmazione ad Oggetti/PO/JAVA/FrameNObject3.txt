@@ -1,0 +1,116 @@
+public class ValutaTecnicoFrame extends JFrame{
+
+	public ValutaTecnicoFrame(PortaleIdraulici portale,TecnicoCaldaia tecnico,String marca)
+	{
+		super("Idraulici");
+		this.portale=portale;
+		this.tecnico=tecnico;
+		this.marca=marca;
+		
+		//Setto il frame
+		super.setBounds(100,100,500,500);
+		super.setVisible(true);
+		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		super.setLayout(new GridLayout(3,3));
+		
+		//Inizializzo i componenti
+		nominativo=new JLabel(tecnico.getCognome()+", "+tecnico.getNome());
+		interventi=new JLabel(Integer.toString(tecnico.getNumInterventi()));
+		giudizio=new JLabel(Double.toString(tecnico.getMediaGiudizio()));
+		
+		//Aggiungo le label ai propri JPanel
+		JPanel contentNominativo=new JPanel();
+		contentNominativo.add(nominativo);
+		JPanel contentInterventi=new JPanel();
+		contentInterventi.add(interventi);
+		JPanel contentGiudizio=new JPanel();
+		contentGiudizio.add(giudizio);
+				
+		//Aggiungo i JPanel al frame
+		super.add(contentNominativo);
+		super.add(contentInterventi);
+		super.add(contentGiudizio);
+		JPanel contentLabelVoto=new JPanel();
+		contentLabelVoto.add(new JLabel("Inserisci il voto "));
+		super.add(contentLabelVoto);
+		inizializatedVoto();
+		JPanel contentVoto=new JPanel();
+		contentVoto.add(voto);
+		super.add(contentVoto);
+		super.add(new JPanel());
+		super.add(new JPanel());
+		super.add(new JPanel());
+		salva=new JButton("Salva");
+		JPanel contentSalva=new JPanel();
+		contentSalva.add(salva);
+		super.add(contentSalva);
+		
+		//Aggiungo i listener
+		Premuto premuto=new Premuto(this,this.tecnico,voto,salva);
+		voto.addActionListener(premuto);
+		salva.addActionListener(premuto);
+		
+		revalidate();
+	}
+	
+	/**
+	 * Inizializza la JComboBoc del voto da scegliere
+	 */
+	private void inizializatedVoto()
+	{
+		voto=new JComboBox();
+		voto.addItem(1);
+		voto.addItem(2);
+		voto.addItem(3);
+		voto.addItem(4);
+		voto.addItem(5);
+	}
+	
+	public class Premuto implements ActionListener{
+
+		public Premuto(ValutaTecnicoFrame frame,TecnicoCaldaia tecnico,JComboBox jcombo,JButton jbutton)
+		{
+			this.frame=frame;
+			this.tecnico=tecnico;
+			this.jcombo=jcombo;
+			this.jbutton=jbutton;
+			this.votoSelezionato=0;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(jcombo==e.getSource())
+				votoSelezionato=(int) jcombo.getSelectedItem();
+			if(jbutton==e.getSource()&&votoSelezionato!=0)
+			{
+				//Faccio effettuare l'intervento
+				try {
+					portale.effettuaIntervento(tecnico.getMatricola(),"Riparazione caldaia",marca,votoSelezionato);
+				} catch (TecnicoNonAbilitatoException e1) {
+					JOptionPane.showMessageDialog(null,e.toString());
+				}
+				System.out.println(tecnico.getMediaGiudizio());
+				//Aggiorno le Label del numero di interventi e del giudizio medio
+				interventi.setText(Integer.toString(tecnico.getNumInterventi()));
+				giudizio.setText(Double.toString(tecnico.getMediaGiudizio()));
+			}
+			else if(!jcombo.isFocusOwner())
+				JOptionPane.showMessageDialog(null,"Seleziona un voto!");
+				
+		}
+		
+		private ValutaTecnicoFrame frame;
+		private TecnicoCaldaia tecnico;
+		private JButton jbutton;
+		private JComboBox jcombo;
+		
+		private int votoSelezionato;
+	}
+	
+	private PortaleIdraulici portale;
+	private TecnicoCaldaia tecnico;
+	private String marca;
+	
+	private JLabel nominativo,interventi,giudizio;
+	private JComboBox voto;
+	private JButton salva;
+}

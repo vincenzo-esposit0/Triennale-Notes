@@ -1,0 +1,107 @@
+public class ElencoTecniciFrame extends JFrame{
+
+	public ElencoTecniciFrame(PortaleIdraulici portale,String marca)
+	{
+		super("Idraulici");
+		this.portale=portale;
+		this.marca=marca;
+		
+		//Setto il frame
+		super.setBounds(100,100,500,500);
+		super.setVisible(true);
+		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		inizializatedTecnici();
+	}
+	
+	/**
+	 * Inizializza e visualizza i tecnici specializzati per una determinata marca
+	 */
+	private void inizializatedTecnici()
+	{
+		JLabel nominativo=new JLabel("Cognome, Nome");
+		JLabel interventi=new JLabel("Numero di interventi");
+		JLabel giudizio=new JLabel("Giudizio medio");
+		ArrayList<TecnicoCaldaia> tecnici=portale.cercaTecnicoSpecializzato(marca);
+		
+		//Setto il layout in base al numero di tecnici
+		super.setLayout(new GridLayout(tecnici.size()+1,4));
+		
+		//Aggiungo le label ai propri JPanel
+		JPanel contentNominativo=new JPanel();
+		contentNominativo.add(nominativo);
+		JPanel contentInterventi=new JPanel();
+		contentInterventi.add(interventi);
+		JPanel contentGiudizio=new JPanel();
+		contentGiudizio.add(giudizio);
+		
+		//Aggiungo i JPanel al frame
+		super.add(contentNominativo);
+		super.add(contentInterventi);
+		super.add(contentGiudizio);
+		super.add(new JPanel().add(new JLabel("")));
+		
+		//Effettuo l'ordinamento
+	/*	Sort sort=new Sort(tecnici);
+		tecnici=sort.sortDecrescente(); */
+		
+		 Collections.sort(tecnici);
+
+		
+		for(TecnicoCaldaia t:tecnici)
+		{
+			contentNominativo=new JPanel();
+			contentInterventi=new JPanel();
+			contentGiudizio=new JPanel();
+			JPanel contentValuta=new JPanel();
+			
+			JButton valuta=new JButton("Valuta");
+			nominativo=new JLabel(t.getCognome()+", "+t.getNome());
+			interventi=new JLabel(Integer.toString(t.getNumInterventi()));
+			giudizio=new JLabel(Double.toString(t.getMediaGiudizio()));
+			
+			//Aggiungo le label ai propri JPanel
+			contentNominativo.add(nominativo);
+			contentInterventi.add(interventi);
+			contentGiudizio.add(giudizio);
+			contentValuta.add(valuta);
+
+			
+			//Aggiungo i JPanel al frame
+			super.add(contentNominativo);
+			super.add(contentInterventi);
+			super.add(contentGiudizio);
+			super.add(contentValuta);
+			
+			valuta.addActionListener(new Premuto(this,valuta,t));
+		}
+			
+	}
+	
+	public class Premuto implements ActionListener{
+
+		public Premuto(ElencoTecniciFrame frame,JButton jbutton,TecnicoCaldaia tecnico)
+		{
+			this.frame=frame;
+			this.jbutton=jbutton;
+			this.tecnico=tecnico;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if(jbutton==e.getSource())
+			{
+				frame.setVisible(false);
+				ValutaTecnicoFrame valutaTecnico=new ValutaTecnicoFrame(portale,tecnico,marca);
+			}
+				
+		}
+		
+		private ElencoTecniciFrame frame;
+		private TecnicoCaldaia tecnico;
+		private JButton jbutton;
+	}
+	
+	private PortaleIdraulici portale;
+	private String marca;
+}

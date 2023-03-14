@@ -1,0 +1,42 @@
+package main_package;
+
+import java.awt.GridLayout;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+public class Frame {
+	//Costruttore 
+	public Frame() {
+		Ambata amb=new Ambata("Giuseppe","Arienzo",1000);
+		createFrame();
+		createPanel(amb);
+		frame.add(panel);
+	}
+	
+	//Metodo createFrame
+	public void createFrame() {
+		frame=new JFrame();
+		frame.setVisible(true);
+		frame.setSize(500, 500);
+		frame.setTitle("Gioco dell'ambata");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	//Metodo createPannel
+	public void createPanel(Ambata amb) {
+		panel=new JPanel();
+		panel.setLayout(new GridLayout(7,1));
+		JPanel jp1=new JPanel();
+		jp1.add(new JLabel(amb.getNome()+" "+amb.getCognome()));
+		jp1.add(new JLabel("Saldo: "+amb.getSaldo()));
+		panel.add(jp1);
+	}
+	
+	//Attributi
+	private JFrame frame;
+	private JButton gioca;
+	private JPanel panel;
+}

@@ -1,0 +1,66 @@
+public Frame2(PortaleIdraulici portale, String marca) {
+		super("Elenco tecnici per marca selezionata");
+		
+		this.portale=portale;
+		this.marca=marca;
+		
+		super.setBounds(100, 100, 500, 500);
+		super.setVisible(true);
+		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		this.contenentPane = new JPanel();
+		super.add(contenentPane);
+		
+		inizialitedTecnici();
+		
+		super.pack();
+		
+	}
+	
+	public void inizialitedTecnici() {
+		//Mi salvo la lista di tecnici specializzasti con la marca ricercata
+		ArrayList<TecnicoCaldaia> listaTecniciSpecializzati = portale.cercaTecnicoSpecializzato(marca);
+		contenentPane.setLayout(new GridLayout(listaTecniciSpecializzati.size()+1, 4, 10, 10));
+		
+		JPanel pannelloNominativo = new JPanel();
+		pannelloNominativo.add(new JLabel("Nome, Cognome"));
+		contenentPane.add(pannelloNominativo);
+		
+		JPanel pannelloInterventi = new JPanel();
+		pannelloInterventi.add(new JLabel("Numero Interventi"));
+		contenentPane.add(pannelloInterventi);
+		
+		JPanel pannelloGiudizioMedio = new JPanel();
+		pannelloGiudizioMedio.add(new JLabel("Giuizio Medio"));
+		contenentPane.add(pannelloGiudizioMedio);
+		
+		JPanel pannellovuoto = new JPanel();
+		contenentPane.add(pannellovuoto);
+		
+		//Eseguo l'ordinamento
+		Collections.sort(listaTecniciSpecializzati);
+		
+		for(TecnicoCaldaia t: listaTecniciSpecializzati) {
+			
+			JPanel pannelloNominativo1 = new JPanel();
+			pannelloNominativo1.add(new JLabel(t.getNome()+", "+t.getCognome()));
+			contenentPane.add(pannelloNominativo1);
+			
+			JPanel pannelloInterventi1 = new JPanel();
+			pannelloInterventi1.add(new JLabel(Integer.toString(t.getNumeroInterventiEffettuati())));
+			contenentPane.add(pannelloInterventi1);
+			
+			JPanel pannelloGiudizio1 = new JPanel();
+			pannelloGiudizio1.add(new JLabel(Double.toString(t.getGiudizioMedio())));
+			contenentPane.add(pannelloGiudizio1);
+			
+			JPanel pannelloBottone = new JPanel();
+			JButton vota = new JButton("Vota");
+			
+			//Aggiungo il listener
+			vota.addActionListener(new TastoPremuto(this, vota));
+			
+			pannelloBottone.add(vota);
+			contenentPane.add(pannelloBottone);
+		}
+	}

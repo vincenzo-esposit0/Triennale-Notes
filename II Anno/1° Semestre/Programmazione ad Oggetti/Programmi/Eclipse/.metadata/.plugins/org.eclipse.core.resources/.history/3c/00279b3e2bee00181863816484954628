@@ -1,0 +1,16 @@
+package main_package;
+
+import java.io.IOException;
+import java.util.*;
+
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		try {
+		BankAccount ba=new BankAccount("Sonno",-10);
+		}catch (IOException exception){
+			System.out.println("Saldo inserito non valido");
+		}
+	}
+
+}

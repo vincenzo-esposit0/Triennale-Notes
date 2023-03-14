@@ -1,0 +1,22 @@
+Random r = new Random();
+int rand;
+rand = r.nextint(..)+1;
+
+public String toString() {
+	return this.getClass().getName()+"[Figures: "+ figure +"]";
+	}
+
+public String toString() {
+	String s="";
+	for(GiocoAzzardo a:lista)
+	s += a+"\n";
+	return s;
+	}
+
+public boolean equals(Object otherObject) {
+	if(otherObject == null) return false;
+	if(getClass() != otherObject.getClass())
+		return false;
+	Oggetto other = (Oggetto)otherObject;
+	return nome.equals(other.nome);		
+	}

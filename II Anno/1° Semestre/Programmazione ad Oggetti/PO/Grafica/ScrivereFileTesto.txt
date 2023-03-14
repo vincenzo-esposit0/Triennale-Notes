@@ -1,0 +1,59 @@
+//Scrittura di un file di testo
+
+public class FileDiTesto {
+
+	public static void main(String[] args) throws IOException{
+		
+		File f=new File("prova.txt");
+
+		if(!f.exists())
+		{
+			f.createNewFile();
+			
+			System.out.println("File creato!");
+			
+			//Scrivere su un file
+			PrintWriter write=new PrintWriter(f);
+			write.println("Ciao a tutti");
+			
+			//Chiudere sempre il file dopo aver effettuato tutte le operazioni
+			write.close();
+		}
+		else {
+			System.out.println("File già esistente!");
+			
+			//Se il file già esiste si utilizza FileOutputStream per aggiungere righe
+			FileOutputStream fos=new FileOutputStream("prova.txt",true);
+			
+			PrintWriter write=new PrintWriter(fos);
+			
+			write.append("Vi saluto");
+		
+		
+			write.close();
+		}
+		
+	}
+
+}
+
+//Lettura di un file di testo
+
+public class LeggereUnFile {
+
+	public static void main(String[] args) throws IOException {
+		
+		FileReader f=new FileReader("prova.txt");
+		
+		BufferedReader read=new BufferedReader(f);
+		
+		String parola="";
+		
+		while( (parola=read.readLine()) !=null )
+		{
+			System.out.println(parola); //in.next() legge una parola alla volta
+		}
+		
+		f.close();
+	}
+}

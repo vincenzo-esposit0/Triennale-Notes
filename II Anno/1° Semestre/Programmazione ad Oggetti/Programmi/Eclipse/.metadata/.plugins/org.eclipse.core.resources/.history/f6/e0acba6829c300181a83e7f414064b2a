@@ -1,0 +1,15 @@
+package Main_package;
+
+import java.util.*;
+import javax.swing.*;
+
+public class main {
+
+	public static void main(String[] args) {
+		String input = JOptionPane.showInputDialog("Inserisci prezzo");
+		String n = input;
+		int x = Integer.parseInt(input);
+		System.out.println("Ho letto: " + x +" " +n);
+		System.exit(0);
+	}
+}

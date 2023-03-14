@@ -1,0 +1,122 @@
+public class FrameCaricamentoFile extends JFrame{
+	private static final long serialVersionUID = 1L;
+	
+	public FrameCaricamentoFile() {
+		super("Caricamento File");
+		super.setBounds(100, 100, 350, 300);
+		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		super.setVisible(true);
+		//super.pack();
+		
+		JPanel contenitore = new JPanel();
+		super.setContentPane(contenitore);
+		contenitore.setLayout(new BorderLayout());
+		
+		/**
+		 * Aggiungo al pannello centro il layout a griglia e inserisco nel pannello 5 una JLabel e una JTextField
+		 */
+		JPanel centro = new JPanel();
+		contenitore.add(centro, BorderLayout.CENTER);
+		centro.setLayout(new GridLayout(3,3));
+		
+		JPanel pannello1 = new JPanel();
+		centro.add(pannello1);
+		
+		JPanel pannello2 = new JPanel();
+		centro.add(pannello2);
+		
+		JPanel pannello3 = new JPanel();
+		centro.add(pannello3);
+		
+		JPanel pannello4 = new JPanel();
+		centro.add(pannello4);
+		
+		JPanel pannello5 = new JPanel();
+		pannello5.add(new JLabel("Nome file: "));
+		pannello5.add(nomeFile);
+		centro.add(pannello5);
+		nomeFile.setColumns(10);
+		
+		JPanel pannello6 = new JPanel();
+		centro.add(pannello6);
+		
+		JPanel pannello7 = new JPanel();
+		centro.add(pannello7);
+		
+		JPanel pannello8 = new JPanel();
+		centro.add(pannello8);
+		
+		JPanel pannello9 = new JPanel();
+		centro.add(pannello9);
+		
+		/**
+		 * Aggiungo al pannello sud il layout a griglia ed inserisco il bottone nel pannello 03
+		 */
+		JPanel sud = new JPanel();
+		contenitore.add(sud, BorderLayout.SOUTH);
+		sud.setLayout(new GridLayout(1, 3));
+		
+		JPanel pannello01 = new JPanel();
+		sud.add(pannello01);
+		
+		JPanel pannello02 = new JPanel();
+		sud.add(pannello02);
+		
+		JPanel pannello03 = new JPanel();
+		pannello03.add(ricercaFile);
+		sud.add(pannello03);	
+		
+		Premuto p=new Premuto(this,nomeFile,ricercaFile);
+		ricercaFile.addActionListener(p);
+		
+		super.pack();
+	}
+	
+	public class Premuto implements ActionListener{
+
+		public Premuto(FrameCaricamentoFile frame,JTextField testoFile, JButton bottoneFile)
+		{
+			this.frame=frame;
+			this.testoFile=testoFile;
+			this.bottoneFile=bottoneFile;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(bottoneFile==e.getSource())
+			{
+				nomeFile=testoFile.getText();
+				if(nomeFile==null)
+					JOptionPane.showMessageDialog(null,"Inserisci il nome dei file!");
+				System.out.println(nomeFile);
+				File f=new File(nomeFile);
+				if(!f.exists())
+					JOptionPane.showMessageDialog(null,"Inserisci un nome di un file esistente!");
+				else
+				{
+					frame.setVisible(false);
+					try {
+						FrameVisualizzazione fv=new FrameVisualizzazione(nomeFile);
+					} catch (ClassNotFoundException | IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+			
+		}
+		
+		private FrameCaricamentoFile frame;
+		private JTextField testoFile;
+		private JButton bottoneFile;
+		private String nomeFile;  
+		
+	}
+
+	public static void main(String[] args) {
+		FrameCaricamentoFile f = new FrameCaricamentoFile();
+
+	}
+
+	private JTextField nomeFile = new JTextField();
+	private JButton ricercaFile = new JButton("Ricerca File");
+}

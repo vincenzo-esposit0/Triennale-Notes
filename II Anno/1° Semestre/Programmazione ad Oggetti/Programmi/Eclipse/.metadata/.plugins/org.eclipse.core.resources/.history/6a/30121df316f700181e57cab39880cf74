@@ -1,0 +1,7 @@
+package main_package;
+
+public class Main {
+	public static Main (String arg[]) {
+		Frame frame=new Frame();
+	}
+}

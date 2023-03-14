@@ -1,0 +1,13 @@
+package main_package;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Main {
+	public static void main(String[] args) {
+		JFrame frame=new JFrame();
+		frame.setSize(200,200);
+
+	}
+
+}

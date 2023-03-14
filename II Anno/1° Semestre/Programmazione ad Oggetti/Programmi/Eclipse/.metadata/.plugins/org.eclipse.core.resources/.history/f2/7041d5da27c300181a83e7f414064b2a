@@ -1,0 +1,15 @@
+package Main_package;
+
+import java.util.*;
+
+public class main {
+
+	public static void main(String[] args) {
+		Scanner in=new Scanner(System.in);
+		System.out.println("Dammi il valore");
+		int n=in.nextInt();
+		System.out.println("Il numero letto è:" +n);
+
+	}
+
+}

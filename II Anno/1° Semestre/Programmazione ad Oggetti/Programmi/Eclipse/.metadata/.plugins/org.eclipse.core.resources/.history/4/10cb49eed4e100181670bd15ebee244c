@@ -1,0 +1,31 @@
+package gioco;
+
+import java.util.Random;
+
+public class Ambata{
+	//Costruttore
+	public Ambata(double vbiglietto,int puntata) {
+		this.vbiglietto=vbiglietto;
+		this.puntata=puntata;
+	}
+	//Metodo gioca
+	public boolean gioca() {
+		Random rand=new Random();
+		for (int i=0;i<10;i++) {
+			if (puntata==rand.nextInt(44)+1)
+				return true;
+		}
+		return false;
+	}
+	//Metodo dammiVincita
+	public double dammiVincita() {
+		return vbiglietto*10;
+	}
+	//Metodo toString
+	public String toString() {
+		return vbiglietto+" "+puntata;
+	}
+	//Attributi
+	private int puntata;
+	private double vbiglietto;
+}
