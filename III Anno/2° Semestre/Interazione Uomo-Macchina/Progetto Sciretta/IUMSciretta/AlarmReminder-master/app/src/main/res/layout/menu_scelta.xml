@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    tools:context="com.delaroystudios.alarmreminder.MainActivity"
+    tools:layout_editor_absoluteY="25dp">
+
+
+
+    <Button
+        android:id="@+id/button_eventi"
+        android:layout_width="212dp"
+        android:layout_height="82dp"
+        android:layout_marginBottom="51dp"
+        android:layout_marginTop="37dp"
+        android:elevation="0dp"
+        android:text="Eventi"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_ricordi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_ricordi"
+        android:layout_width="212dp"
+        android:layout_height="82dp"
+        android:layout_marginBottom="107dp"
+        android:layout_marginTop="170dp"
+        android:elevation="0dp"
+        android:text="Ricordi"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+
+</android.support.constraint.ConstraintLayout>
