@@ -1,0 +1,13 @@
+﻿
+astrazione funzionale: coniste nel realizzare un sottoprogramma che realizza una certa azione, e che può essere riutilizzato in più punti quando necessario.
+
+struttura passata per indirizzo: si passa una struttura ad una funzione tramite indirizzo , mai per copia. es: void stampa(int dim, alunno *a); si accede ai campi della struct con ->;
+
+inizializzazione strutture (2 nodi): il primo nodo ha un campo puntatore a struct            
+ (es: operaio *succ) che punterà all'indirizzo del secondo nodo(succ=nodo2->succ) mentre il puntatore del secondo nodo punterà a NULL.
+
+cosa è un record: un record è un insieme di variabili non omogenee che sono collegate tra loro;In c si definiscono struct
+
+top down: la progettazione top-down consiste nel partire dal problema iniziale e suddividerlo in sottoproblemi più semplici da risolvere mediante l'utilizzo del procedimento stepwise refinement cioè si considera il problema dal livello più alto di astrazione per poi scendere ad un livello di dettaglio sempre maggiore.
+
+bottom up: la progettazione bottom-up consiste nel considerare inizialmente le componenti elementari della soluzione al problema e poi metterle insieme per creare la soluzione definitiva per il problema iniziale.
