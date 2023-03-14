@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<db xsi:noNamespaceSchemaLocation="dbschema.xsd"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <person idnum="1234">
+    <last>Rossi</last><first>Mario</first>
+  </person>
+  <person idnum="5678">
+    <last>Bianchi</last><first>Elena</first>
+  </person>
+  <person idnum="2678">
+    <last>Verdi</last><first>Antonio</first>
+  </person>  
+  <person idnum="7234">
+    <last>Neri</last><first>Marco</first>
+  </person>   
+</db>

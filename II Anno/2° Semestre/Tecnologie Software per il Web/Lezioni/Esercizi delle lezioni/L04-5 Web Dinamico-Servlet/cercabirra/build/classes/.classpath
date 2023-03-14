@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="cercabirraIII/src/|cercabirra/src/|cercabirraIIiterazione/src/" kind="src" path=""/>
+	<classpathentry kind="src" path="cercabirra/src"/>
+	<classpathentry kind="src" path="cercabirraIII/src"/>
+	<classpathentry kind="src" path="cercabirraIIiterazione/src"/>
+	<classpathentry kind="output" path="cercabirra/build/classes"/>
+</classpath>

@@ -1,0 +1,71 @@
+*{font-family: 'Righteous', arial, serif;}
+
+/*----------------------------------
+header
+--------------------------------*/
+
+.header{background: #03020A; border-radius: 20px;} /*sfondo dell'header*/
+.header_logo{color: #fff; float: left;  display: block; padding: 0px; width: 180px; height: 70px; border-radius: 20px;}/*parametriziamo  il logo*/
+.header_logo_img{margin-left:10px; width: 180px; height: 70px; border-radius: 20px;}
+.header_menu{float: right; margin: 0; padding: 0;}/*parametrizziamo il menu*/
+.header_menu_item{display: inline-block;}/*parametriziamo l'item*/
+.header_menu_item_login {display: inline-block;}/*parametriziamo l'item*/
+.header_menu_item_Carrello{display: inline-block;}
+.header_menu_item a{color: #fff; display: block; padding: 10px; margin-bottom:10px; text-decoration: none;border-radius: 100px;}
+.header_menu_item_login img{display: block; padding: 10px; text-decoration: none; width: 40px; height: 40px; border-radius: 100px; margin-bottom:-25px; margin-right:10px; margin-top:5px;}
+.header_menu_item_Carrello img{display: block; padding: 10px; text-decoration: none; width: 40px; height: 40px; border-radius: 100px; margin-bottom:-25px; margin-right:0px; margin-top:5px;}
+.header_menu_item a:hover{background: #322679}/*animazione del menu 'sfondo colorato'*/
+.header_menu_item_login img:hover{background: #322679}/*animazione del menu 'sfondo colorato'*/
+.header_menu_item_Carrello img:hover{background: #322679}
+.media{display:none;}
+.header_icon-bar{display: block; float: right; padding: 20px; display: none;}/*parametrizziamo 'iconbar'*/
+.header_icon-bar span{display: block; height: 3px; width: 30px; background: #fff; margin-bottom: 5px}/*parametrizziamo il responsive dell'icon-bar*/
+
+/*----------------------------------
+footer
+--------------------------------*/
+
+.footer{
+background: #03020A; 
+padding: 20px;
+color: #fff;
+border-radius: 20px;
+max-width: 100%;
+}/*parametrizzo e formatto testo e colore*/
+
+/*----------------------------------
+Box
+--------------------------------*/
+.box{background-color: rgba(255,255,255,0.6);max-width: 70%;margin-top: 10px;margin-bottom:10px;margin-left:15%;border-radius: 20px;}
+.box_table{padding:10px 20px 10px 20px;}
+.box_text{padding:10px 20px 20px 20px;}
+/*----------------------------------
+table
+--------------------------------*/
+table {font-family: arial, sans-serif;border-collapse: collapse;border: 2px solid black;width:100%;empty-cells: hide;}
+td, th {border-radius: 20px;border: 2px solid black;text-align: left;padding: 8px;}
+
+/*----------------------------------
+button
+--------------------------------*/
+
+.button{border: none;height: 30px;width: 200px;background: #322679;color: #fff;font-size: 15px;font-color:grey;border-radius: 20px;}
+.button:hover{background: purple;cursor: pointer;}
+/*----------------------------------
+media query
+--------------------------------*/
+
+@media (max-width: 1300px) {
+.std{display:none;}
+.media{display:inline-block;}
+.box{background-color: rgba(255,255,255,0.6);max-width: 98%;margin-top: 10px;margin-bottom:10px;margin-left:1%;border-radius: 20px;}
+.footer{background: #03020A; padding: 20px;color: #fff;border-top-left-radius: 20px;border-top-right-radius:20px;max-width: 100%;margin-top:10px}
+}
+
+@media (max-width: 1000px) {
+.box{background-color: rgba(255,255,255,0.6);max-width: 98%;min-width: 900px;margin-top: 10px;margin-bottom:10px;margin-left:1%;border-radius: 20px;}
+.footer{background: #03020A; padding: 20px;color: #fff;min-width: 900px;border-top-left-radius: 20px;border-top-right-radius:20px;max-width: 100%;margin-top:10px}
+.header{background: #03020A; border-radius: 20px;min-width: 900px;} /*sfondo dell'header*/
+}
+
+.clearfix::after {display: table;content: " ";clear: both;}

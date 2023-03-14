@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Registrazione</title>
+	<link rel="icon" type="image/png" href="Css/img_css/favicon.png">
+	<link rel="stylesheet" type="text/css" href="Css/Registration.css">
+	<script>
+	function printError(elemId, hintMsg) {
+	    document.getElementById(elemId).innerHTML = hintMsg;
+	}
+	
+	function validateForm() {
+	 
+	    var nome = document.regForm.nome.value;
+	    var cognome = document.regForm.cognome.value;
+	    var email = document.regForm.email.value;
+	    var username = document.regForm.username.value;
+	    var password = document.regForm.password.value;
+	    var indirizzo = document.regForm.indirizzo.value
+	   
+	    var nameErr = cognomeErr = usernameErr = passwordErr = emailErr = indirizzoErr = true;
+	    
+		//Nome
+	    if(nome == "") {
+	        printError("nameErr", "Inserire un nome");
+	    } else {
+	        var regex = /^[a-zA-Z\s]+$/;                
+	        if(regex.test(nome) === false) {
+	            printError("nameErr", "Inserire un nome valido");
+	        } else {
+	            printError("nameErr", "");
+	            nameErr = false;
+	        }
+	    }
+	    
+	    //Cognome
+	    if(cognome == "") {
+	        printError("cognomeErr", "Inserire un cognome");
+	    } else {
+	        var regex = /^[a-zA-Z\s]+$/;                
+	        if(regex.test(cognome) === false) {
+	            printError("cognomeErr", "Inserire un cognome valido");
+	        } else {
+	            printError("cognomeErr", "");
+	            cognomeErr = false;
+	        }
+	    }
+	    
+		//E-mail
+	    if(email == "") {
+	        printError("emailErr", "Inserire una e-mail");
+	    } else {
+	        var regex = /^\S+@\S+\.\S+$/;
+	        if(regex.test(email) === false) {
+	            printError("emailErr", "Inserire una e-mail valida");
+	        } else{
+	            printError("emailErr", "");
+	            emailErr = false;
+	        }
+	    }
+	    
+	    //Username
+	    if(username == "") {
+	        printError("usernameErr", "Inserire un username");
+	    } else {
+	        var regex = /^[0-9a-zA-Z_.-]+$/;                
+	        if(regex.test(username) === false) {
+	            printError("usernameErr", "Inserire un username valido");
+	        } else {
+	            printError("usernameErr", "");
+	            usernameErr = false;
+	        }
+	    }
+	    
+	    //Password
+	    if(password == "") {
+	        printError("passwordErr", "Inserire una password");
+	    } else {
+	        var regex = /^[A-Za-z]\w{7,14}$/;                
+	        if(regex.test(password) === false) {
+	            printError("passwordErr", "Inserire una password valido");
+	        } else {
+	            printError("passwordErr", "");
+	            passwordErr = false;
+	        }
+	    }
+	    
+	    //Indirizzo
+	    if(indirizzo == "") {
+	        printError("indirizzoErr", "Inserire un indirizzo");
+	    } else {
+	    	var regex = /^[0-9a-zA-Z,]\w{8,60}]+$/;                  
+	        if(regex.test(indirizzo) === false) {
+	            printError("indirizzoErr", "Inserire un indirizzo valido");
+	        } else {
+	            printError("indirizzoErr", "");
+	            indirizzoErr = false;
+	        }
+	    }
+	    
+	    if((nameErr = cognomeErr = usernameErr = passwordErr = emailErr) == true) {
+	       return false;
+	    }
+	};
+	</script>
+</head>
+<body style="background: url(Css/img_css/LRbackgroung.jpg);">
+	<div class="regibox">
+		<h1>Registrazione</h1>
+		<form name="regForm" onsubmit="return validateForm()" action="Registrazione" method="post"> 
+		    <input type="text" name="nome" placeholder="Nome" class="normal"> <br>
+		    <div class="error" id="nameErr"></div>
+		
+			<input type="text" name="cognome" placeholder="Cognome" class="normal"> <br>
+		    <div class="error" id="cognomeErr"></div>
+		
+			<input type="text" name="email" placeholder="Indirizzo Email" class="normal"> <br>
+		    <div class="error" id="emailErr"></div>
+		
+		    <input type="text" name="username" placeholder="Username" class="special"> <br>
+		    <a class="mini">lettere, numeri e carrettri speciali </a>
+		    <div class="error" id="usernameErr"></div>
+		
+			<input type="password" name="password" placeholder="Password" class="special"> <br>
+			<a class="mini">lunghezza minima 8 è consentito l'uso di carettari speciali </a> 
+		    <div class="error" id="passwordErr"></div>
+		    
+		    <input type="text" name="indirizzo" placeholder="Via Manzoni n°15, Milano, Mi, 20099" value="Via Manzoni n°15, Milano, Mi, 20099" class="special"> <br>
+		    <a class="mini">composto da: Via, Città, Provincia e Codice postale </a> 
+		    <div class="error" id="indirizzoErr"></div>
+		
+		    <input type="submit" value="Crea il tuo account">	    
+		</form>
+	</div>
+</body>
+</html>

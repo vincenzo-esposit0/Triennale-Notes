@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head><title>Loading Scripts</title>
+<link rel="stylesheet" href="css/styles.css" type="text/css"/>
+<script src="scripts/phish.js"></script>
+</head>
+<body>
+<div align="center">
+<h1 class="title">Loading Scripts</h1>
+<br/>
+<fieldset>
+  <legend>Invoking Function from Button</legend>
+  <form action="#">
+    <input type="button" value="How Much Did You Win?"
+           onclick='showWinnings1()'/>
+  </form>
+</fieldset>
+<br/>
+<fieldset>
+  <legend>Invoking Function from <code>script</code> Tag</legend>
+  <script>showWinnings2()</script>
+</fieldset>
+<br/>
+</div>
+</body></html>

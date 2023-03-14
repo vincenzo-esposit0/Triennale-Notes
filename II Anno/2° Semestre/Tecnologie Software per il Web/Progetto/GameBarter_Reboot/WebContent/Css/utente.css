@@ -1,0 +1,81 @@
+*{font-family: 'Righteous', arial, serif;}
+
+/*----------------------------------
+header
+--------------------------------*/
+
+.header{background: #03020A; border-radius: 20px;} /*sfondo dell'header*/
+.header_logo_img{float: left;margin-left:10px; width: 180px; height: 70px; border-radius: 20px;}
+
+.header_menu{float: right; margin: 0; padding: 0;}/*parametrizziamo il menu*/
+
+.header_menu_item_login {display: inline-block;padding:10px;margin-left:-30px;}/*parametriziamo l'item*/
+.header_menu_item_login a{color: #fff; display: inline-block; text-decoration: none;margin-top:5px; padding:0px 0px 10px 10px;border-radius: 100px;}
+.header_menu_item_login img{display: inline-block; text-decoration: none; width: 40px; height: 40px; margin-bottom:-15px;border-radius: 100px;  }
+.header_menu_item_login :hover{background: #322679}/*animazione del menu 'sfondo colorato'*/
+
+.header_menu_item_login2 {display: inline-block;padding:10px;}/*parametriziamo l'item*/
+.header_menu_item_login2 a{color: #fff; display: inline-block; text-decoration: none;margin-top:5px; padding:0px 0px 10px 10px;border-radius: 100px;}
+.header_menu_item_login2 img{display: inline-block; text-decoration: none; width: 40px; height: 40px; margin-bottom:-15px;border-radius: 100px;  }
+.header_menu_item_login2 :hover{background: #322679}/*animazione del menu 'sfondo colorato'*/
+
+/*----------------------------------
+footer
+--------------------------------*/
+
+.footer{background: #03020A; padding: 20px;color: #fff;border-radius: 20px;max-width: 100%;}/*parametrizzo e formatto testo e colore*/
+
+/*----------------------------------
+Box
+--------------------------------*/
+.box{background-color: rgba(255,255,255,0.6);max-width: 70%;margin-top: 10px;margin-bottom:10px;margin-left:15%;border-radius: 20px;}
+.gamer{float:right;padding:10px;width: 279.5px; height: 552.75px;}
+.gamer2{float:right;padding:10px;width: 279.5px; height: 552.75px;display:none;}
+.box_text{padding:20px 20px 5px 20px;}
+.box_add{padding:0px 20px 10px 20px;}
+.box_table{padding:0px 20px 10px 20px;}
+.box_table_ord{padding:0px 20px 20px 20px;}
+
+/*----------------------------------
+table
+--------------------------------*/
+table {font-family: arial, sans-serif;border-collapse: collapse;width: auto;border: 2px solid black;}
+td, th {border-radius: 20px;border: 2px solid black;text-align: left;padding: 8px;}
+.x{width: 25px; height: 25px;cursor: pointer;}
+.tdx{text-align: center}
+
+/*----------------------------------
+button
+--------------------------------*/
+.button{border: none;height: 30px;width: 68px;background: #322679;color: #fff;font-size: 15px;font-color:grey;border-radius: 20px;}
+.button:hover{background: purple;cursor: pointer;}
+
+/*----------------------------------
+text
+--------------------------------*/
+.text{border-radius: 20px;border: 1px solid black;height: 30px;font-size: 15px;font-color:grey;width: 80px;padding-left:10px;}
+
+/*----------------------------------
+Select
+--------------------------------*/
+.select{border-top-left-radius: 20px;border-bottom-left-radius: 20px;border: 1px solid black;padding-left:10px;background:rgba(255,255,255,0.75);height: 30px;width: 300px;font-size: 15px;font-color:grey;cursor: pointer;}
+
+/*----------------------------------
+media query
+--------------------------------*/
+
+@media (max-width: 1200px) {
+
+.std{display:none;}
+.media{display:inline-block;}
+.box{background-color: rgba(255,255,255,0.6);max-width: 98%;min-width:900px;margin-top: 10px;margin-bottom:10px;margin-left:1%;border-radius: 20px;}
+.footer{background: #03020A; padding: 20px;color: #fff;border-top-left-radius: 20px;min-width:700px;border-top-right-radius:20px;max-width: 100%;margin-top:10px}
+.header{min-width:700px;}
+}
+
+@media (max-width: 900px) {
+.gamer{display:none;}
+.gamer2{display:none;}
+}
+
+.clearfix::after {display: table;content: " ";clear: both;}

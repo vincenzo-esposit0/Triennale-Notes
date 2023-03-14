@@ -1,0 +1,7 @@
+<!ELEMENT db (person*)>
+
+<!ELEMENT person (last,first)>
+<!ATTLIST person idnum CDATA #REQUIRED>
+
+<!ELEMENT last (#PCDATA)>
+<!ELEMENT first (#PCDATA)>
