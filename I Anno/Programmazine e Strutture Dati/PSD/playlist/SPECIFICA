@@ -1,0 +1,49 @@
+SPECIFICA OPERATORI
+
+SPECIFICA SINTATTICA
+
+TIPI playist,intero,stringa,item
+
+newplaylist()->playlist
+
+addsong(playlist,item)->playlist
+
+remsong(playlist,intero)->playlist
+
+forward(playlist,intero)->playist
+
+subpl(payist,stringa)->playist
+
+
+SPECIFICA SEMANTICA
+
+newplaylist()=pl
+PRE:
+POST: pl i plnil
+
+
+addsong(pl,e)=pl'
+PRE:  e!=NUITEM
+POST: pl=<l0,l1,...,ln-1>   n>=0
+      pl'=<0,l1,...,ln-1,l>
+
+
+removesong(pl,pos)=pl'
+PRE: pos è una posizione valida
+POST: pl=<l0,l1,...,ln-1>   n>=0    0<=pos<=n-1
+      
+      E' una sequenza ottenuta da pl cancellando l'elemento in posizione pos
+
+
+forward(pl,pos)=pl'
+PRE: pl=<l0,l1,...,lpos,lpos+1,...,ln-1>   n>=2
+
+     0<=pos<=n-2
+
+
+
+subpl(pl,s)=pl'
+PRE: s non nulla
+POS: pl è ottenuta da pl prendendo tutte le canzoni che hanno s come cantante
+
+
